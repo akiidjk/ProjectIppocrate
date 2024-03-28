@@ -3,7 +3,7 @@ services:
   backend:
     build: ./backend # Assicurati che il percorso punti alla directory con il Dockerfile del backend
     ports:
-      - "8000:8000" # Sostituisci con la porta che il tuo backend ascolta se diversa da 8000
+      - "8080:8080" # Sostituisci con la porta che il tuo backend ascolta se diversa da 8000
     networks:
       - app-network
 
@@ -12,7 +12,7 @@ services:
     ports:
       - "3000:3000" # Sostituisci con la porta che il tuo frontend ascolta se diversa da 3000
     environment:
-      - BACKEND_URL=http://backend:8000 # Sostituisci con la variabile d'ambiente che il tuo frontend utilizza per collegarsi al backend
+      - BACKEND_URL=http://backend:8080 # Sostituisci con la variabile d'ambiente che il tuo frontend utilizza per collegarsi al backend
     networks:
       - app-network
 
