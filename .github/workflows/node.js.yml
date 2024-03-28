@@ -12,11 +12,27 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Use Node.js 16.x
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '21.x'
+        node-version: '16.x'
         cache: 'npm'
+    
+    # Inserisci qui il passaggio di caching dei moduli node
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        # Il percorso dove npm ci verrà eseguito, che è dove si trova il package-lock.json
+        path: frontend/node_modules
+        # La chiave di cache deve essere unica per ogni combinazione di sistema operativo e versione di node
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('frontend/package-lock.json') }}
+        # Ripristina le chiavi per accelerare l'installazione delle dipendenze se la chiave esatta non è disponibile
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
       
     - name: Install dependencies
       run: npm ci
