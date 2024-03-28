@@ -3,6 +3,8 @@ FROM node:20
 
 WORKDIR /frontend
 
+COPY package.json package-lock.json ./
+
 # Installa le dipendenze
 RUN npm ci
 
