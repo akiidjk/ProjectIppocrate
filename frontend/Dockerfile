@@ -17,7 +17,7 @@ RUN npm run build
 EXPOSE 3000
 
 # Avvia l'applicazione
-CMD ["npm", "start","-H","0.0.0.0"]
+CMD ["npm", "run", "start","--","-H","0.0.0.0"]
 
 # ! PROD
 # # Fase di build
