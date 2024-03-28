@@ -11,14 +11,12 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - name: Change dir
-      run : cd backend
     - name: Build
       run: cargo build --verbose
+      working-directory: backend
     - name: Run tests
       run: cargo test --verbose
+      working-directory: backend
