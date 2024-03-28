@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: '21.x' # Aggiunte versioni multiple come esempio
+        node-version: [21.x] # Aggiunte versioni multiple come esempio
     
     steps:
     - uses: actions/checkout@v3
