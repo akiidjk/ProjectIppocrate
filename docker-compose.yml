@@ -1,20 +1,28 @@
 version: '3.8'
+
+#@danmig06 for access to an service with the ip not use the IP but the name of image like "http://backend:8080" 
+
 services:
   backend:
-    build: ./backend # Assicurati che il percorso punti alla directory con il Dockerfile del backend
+    build: ./backend
     ports:
-      - "8080:8080" # Sostituisci con la porta che il tuo backend ascolta se diversa da 8000
-    networks:
-      - app-network
+      - "8080:8080"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
 
   frontend:
-    build: ./frontend # Assicurati che il percorso punti alla directory con il Dockerfile del frontend
+    build: ./frontend
     ports:
-      - "3000:3000" # Sostituisci con la porta che il tuo frontend ascolta se diversa da 3000
+      - "3000:3000"
     environment:
-      - BACKEND_URL=http://backend:8080 # Sostituisci con la variabile d'ambiente che il tuo frontend utilizza per collegarsi al backend
-    networks:
-      - app-network
+      - BACKEND_URL=http://backend:8080
+    depends_on:
+      redis:
+        condition: service_healthy
 
   redis:
       image: "redis:alpine"
@@ -23,9 +31,11 @@ services:
         - "6379:6379"
       volumes:
         - redis-data:/data
-
-networks:
-  app-network:
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
 volumes:
   redis-data:
