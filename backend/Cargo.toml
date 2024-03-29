@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.5.1"
+redis = "0.25.2"
