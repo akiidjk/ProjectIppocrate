@@ -16,19 +16,16 @@ services:
     networks:
       - app-network
 
-  db:
-    image: postgres:latest
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: test
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-    ports:
-      - "5432:5432"
+  redis:
+      image: "redis:alpine"
+      command: redis-server --requirepass password
+      ports:
+        - "6379:6379"
+      volumes:
+        - redis-data:/data
 
 networks:
   app-network:
 
 volumes:
-  db-data:
+  redis-data:
