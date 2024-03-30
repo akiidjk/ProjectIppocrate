@@ -306,6 +306,7 @@ dependencies = [
  "env_logger",
  "log",
  "redis",
+ "serde_json",
 ]
 
 [[package]]
