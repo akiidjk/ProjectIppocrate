@@ -51,16 +51,7 @@ async fn test(pool: Data<Pool>) -> impl Responder {
 async fn main() -> std::io::Result<()> {
 
     env_logger::init_from_env(Env::default().default_filter_or("info"));
-
-    // Setup Redis
-    // let client = Client::open(URL_REDIS).expect("Failed to create Redis client");
-    //
-    //
-    // let value = json!({
-    //     "name": "John Doe",
-    //     "age": 30,
-    //     "is_active": false
-    // });
+    
     let mut cfg = Config::from_url(URL_REDIS);
     let pool = cfg.create_pool(Some(Runtime::Tokio1)).unwrap();
     let pool_data = Data::new(pool);
