@@ -5,3 +5,8 @@ He considered medicine a science based on a rational method of diagnosis and the
 
 Grande medico greco nato a Cos intorno al 460 a.C., Ippocrate fu autore degli Aforismi, opera che Dante, come tutto il suo tempo, considera la base dell'apprendimento della medicina (cfr. Pd. XI,4, dove "amforismi" equivale a scienze mediche).
 Considerò la medicina una scienza basata su un metodo razionale di diagnosi e terapia.
+
+
+## Schema project
+
+![Schema-Project](/assets/Schema-ProjectIppocrate.png)
