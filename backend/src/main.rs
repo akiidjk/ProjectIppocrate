@@ -1,18 +1,13 @@
 mod data;
 mod model;
 
-use std::env;
-use std::sync::Mutex;
-use std::time::Duration;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder, web};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder};
 use actix_web::middleware::Logger;
 use actix_web::web::Data;
 use deadpool_redis::{Config, Pool, Runtime};
 use deadpool_redis::redis::cmd;
 use env_logger::Env;
-use log::{info, warn, error};
-use redis::{Client, Commands, Connection, RedisResult};
-use redis::aio::MultiplexedConnection;
+use log::{info};
 use serde_json::json;
 
 use crate::data::URL_REDIS;
@@ -52,7 +47,7 @@ async fn main() -> std::io::Result<()> {
 
     env_logger::init_from_env(Env::default().default_filter_or("info"));
     
-    let mut cfg = Config::from_url(URL_REDIS);
+    let cfg = Config::from_url(URL_REDIS);
     let pool = cfg.create_pool(Some(Runtime::Tokio1)).unwrap();
     let pool_data = Data::new(pool);
 
