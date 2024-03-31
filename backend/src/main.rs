@@ -12,6 +12,8 @@ use serde_json::json;
 
 use crate::data::URL_REDIS;
 
+//only for testing
+use rand::Rng;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -28,11 +30,14 @@ async fn test(pool: Data<Pool>) -> impl Responder {
         "is_active": false
     });
 
-    let value_str:&str = &*serde_json::to_string(&value).unwrap();
+    let value_str = serde_json::to_string(&value).unwrap();
     let mut conn = pool.get().await.unwrap();
 
+    let random_number: u32 = rand::thread_rng().gen_range(1..=10000);
+    let key = format!("deadpool/test_key{}", random_number);
+
     cmd("SET")
-            .arg(&["deadpool/test_key1", &value_str])
+            .arg(&[&key, &value_str])
             .query_async::<_, ()>(&mut conn)
             .await.unwrap();
 
