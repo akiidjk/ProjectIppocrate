@@ -306,6 +306,7 @@ dependencies = [
  "deadpool-redis",
  "env_logger",
  "log",
+ "rand",
  "redis 0.25.2",
  "serde",
  "serde_json",
