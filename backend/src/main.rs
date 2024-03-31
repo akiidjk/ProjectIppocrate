@@ -12,7 +12,7 @@ use serde_json::json;
 
 use crate::data::URL_REDIS;
 
-//only for testing
+//Only for developing
 use rand::Rng;
 
 #[get("/")]
