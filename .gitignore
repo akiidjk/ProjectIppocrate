@@ -38,3 +38,5 @@ frontend/next-env.d.ts
 
 #back
 backend/target
+backend/Benchmark/__pycache__
+backend/.idea
