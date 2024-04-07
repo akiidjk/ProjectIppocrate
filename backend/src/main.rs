@@ -11,7 +11,7 @@ use deadpool_redis::{Config, Pool, Runtime};
 use env_logger::Env;
 use log::{error, info};
 use crate::model::TestModel;
-use crate::redis::{redis_create_json, redis_create_strings, redis_get_json, redis_get_string};
+use crate::redis::{redis_create_json, redis_create_strings, redis_get_json, redis_get_string, redis_remove};
 use crate::data::URL_REDIS;
 
 //Only for developing
@@ -48,6 +48,11 @@ async fn test(pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
 
     // * USE OF FUNCTION (get)
     let result = redis_get_string(pool.clone(), &key).await;
+    println!("{:?}", result);
+    let result = redis_get_json(pool.clone(), &key1).await;
+    println!("{:?}", result);
+
+    let result = redis_remove(pool.clone(), &key1).await;
     println!("{:?}", result);
     let result = redis_get_json(pool.clone(), &key1).await;
     println!("{:?}", result);
