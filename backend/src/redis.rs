@@ -90,9 +90,3 @@ pub async fn redis_remove(pool: Data<Pool>,key: &str) -> Result<bool, ErrorManag
 
     Ok(true)
 }
-
-//
-// pub async fn redis_modify(pool: Data<Pool>) -> Result<bool, RedisError> {
-//     let mut conn = pool.get().await.map_err(|_| RedisError::from((redis::ErrorKind::IoError, "Failed to get connection from pool")))?;
-// }
-//

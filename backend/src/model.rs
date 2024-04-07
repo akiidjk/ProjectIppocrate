@@ -9,3 +9,14 @@ pub struct TestModel {
     pub age: u32,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct PageRequest {
+    pub(crate) id: u64,
+    // pub(crate) response_type: String, //to replace with the model of page
+}
+
+#[derive(Deserialize)]
+pub struct AuthInfo {
+    pub(crate) username: String,
+    pub(crate) password: String,
+}

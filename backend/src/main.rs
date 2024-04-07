@@ -4,13 +4,13 @@ mod redis;
 mod error_manager;
 
 use std::process::exit;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post};
 use actix_web::middleware::Logger;
 use actix_web::web::Data;
 use deadpool_redis::{Config, Pool, Runtime};
 use env_logger::Env;
 use log::{error, info};
-use crate::model::TestModel;
+use crate::model::{AuthInfo, PageRequest, TestModel};
 use crate::redis::{redis_create_json, redis_create_strings, redis_get_json, redis_get_string, redis_remove};
 use crate::data::URL_REDIS;
 
@@ -22,6 +22,21 @@ use rand::{Rng, thread_rng};
 async fn hello() -> impl Responder {
     info!("Handling request for /hello endpoint");
     HttpResponse::Ok().body("Server online!")
+}
+
+
+#[get("/page")]
+async fn get_page(pool: Data<Pool>,page: web::Query<PageRequest>) -> impl Responder {
+    let search_info = page.into_inner();
+    format!("Searching for: {}", search_info.id,)
+}
+
+
+#[post("/auth")]
+async fn auth_admin(pool: Data<Pool>,auth_info: web::Json<AuthInfo>) -> impl Responder {
+    let auth_info = auth_info.into_inner();
+    let response = format!("Username for: {} password: {}", auth_info.username, auth_info.password);
+    HttpResponse::Ok().body(response)
 }
 
 #[get("/test")] //Simple test endpoint
@@ -98,6 +113,8 @@ async fn main() -> std::io::Result<()> {
             .app_data(pool_data.clone())
             .service(hello)
             .service(test)
+            .service(get_page)
+            .service(auth_admin)
             .wrap(Logger::default())
     })
         .bind(("0.0.0.0", 8000))?
