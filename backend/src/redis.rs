@@ -27,6 +27,15 @@ macro_rules! get_redis_value {
     };
 }
 
+macro_rules! remove_redis_value {
+    ($conn:expr, $key:expr) => {
+        cmd("DEL").
+        arg(&$key).
+        query_async::<_, ()>(&mut $conn)
+        .await?
+    };
+}
+
 // * ---------------------------- CREATION ---------------------------------
 pub async fn redis_create_strings(pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
     let mut conn = pool.get().await?;
@@ -56,7 +65,6 @@ pub async fn redis_get_string(pool: Data<Pool>, key: &str) -> Result<String, Err
 
     let formatted_key = format!("deadpool/{}", key);
     let value: String = get_redis_value!(conn,formatted_key);
-
     Ok(value)
 }
 
@@ -73,13 +81,18 @@ pub async fn redis_get_json(pool: Data<Pool>, key: &str) -> Result<TestModel, Er
     Ok(model)
 }
 
+pub async fn redis_remove(pool: Data<Pool>,key: &str) -> Result<bool, ErrorManager> {
+    let mut conn = pool.get().await.map_err(ErrorManager::PoolError)?;
 
+    let formatted_key = format!("deadpool/{}", key);
+
+    remove_redis_value!(conn,formatted_key);
+
+    Ok(true)
+}
 
 //
 // pub async fn redis_modify(pool: Data<Pool>) -> Result<bool, RedisError> {
 //     let mut conn = pool.get().await.map_err(|_| RedisError::from((redis::ErrorKind::IoError, "Failed to get connection from pool")))?;
 // }
 //
-// pub async fn redis_remove(pool: Data<Pool>) -> Result<bool, RedisError> {
-//     let mut conn = pool.get().await.unwrap();
-// }
