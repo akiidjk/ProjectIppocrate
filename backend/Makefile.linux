@@ -1,0 +1,6 @@
+install:
+	cargo install --path .
+clean:
+	rm target/release/backend.exe
+purge:
+	rm -rf target
