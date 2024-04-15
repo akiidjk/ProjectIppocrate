@@ -7,12 +7,12 @@ COPY package.json package-lock.json ./
 
 FROM base AS install
 RUN mkdir -p /temp/dev
-COPY package.json /temp/dev/
+COPY package.json bun.lockb /temp/dev/
 RUN cd /temp/dev && bun install --frozen-lockfile
 
 # Installa le dipendenze
 RUN mkdir -p /temp/prod
-COPY package.json /temp/prod/
+COPY package.json bun.lockb /temp/prod/
 RUN cd /temp/prod && bun install --frozen-lockfile --production
 
 FROM base AS prerelease
