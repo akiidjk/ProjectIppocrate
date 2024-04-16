@@ -10,12 +10,12 @@ export const metadata = {
   description: "Sito descrittivo del obbiettivo salute e benessere del agenda 2030 comprensivo di tutte le materie scolasite",
 };
 
-// Resource:
 
-// https://ui.shadcn.com/
-// https://ui.aceternity.com/components
-
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <body className={montserrat.className}>{children}</body>

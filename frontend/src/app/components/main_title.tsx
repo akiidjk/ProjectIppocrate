@@ -1,4 +1,4 @@
-import { Spotlight } from "./Spotlight.js";
+import { Spotlight } from "./Spotlight";
 
 
 export default function MainTitle(){
