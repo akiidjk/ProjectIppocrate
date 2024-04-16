@@ -10,8 +10,8 @@ use actix_web::web::Data;
 use deadpool_redis::{Config, Pool, Runtime};
 use env_logger::Env;
 use log::{error, info};
-use crate::model::TestModel;
-use crate::redis::{redis_create_json, redis_create_strings, redis_get_json, redis_get_string, redis_remove};
+use crate::model::{TestModel, HTMLPage, Paragraph};
+use crate::redis::{redis_create_page, redis_create_strings, redis_get_page, redis_generate_html, redis_get_string, redis_remove};
 use crate::data::URL_REDIS;
 
 //Only for developing
@@ -28,9 +28,10 @@ async fn hello() -> impl Responder {
 async fn test(pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
 
     // * Creation of test model
-    let value = TestModel {
-        name: "John Doe".to_string(),
-        age: 30,
+    let value = HTMLPage {
+        title: "test page".to_string(),
+        paragraphs: vec!(Paragraph {title: "mimmo".to_string(), content: "questo e' un ricchissimo paragrafo".to_string()}, 
+                         Paragraph {title: "paragrafo2".to_string(), content: "godo forte".to_string()}),
     };
 
     // * RANDOM NUMBER FOR TESTING
@@ -41,23 +42,14 @@ async fn test(pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
 
     // * USE OF FUNCTION (write)
     redis_create_strings(pool.clone(), &key, "Ciao").await?;
-    redis_create_json(pool.clone(), &key1, value).await?;
+    redis_create_page(pool.clone(), &key1, value).await?;
 
     println!("{}", key);
     println!("{}", key1);
 
-    // * USE OF FUNCTION (get)
-    let result = redis_get_string(pool.clone(), &key).await;
-    println!("{:?}", result);
-    let result = redis_get_json(pool.clone(), &key1).await;
-    println!("{:?}", result);
+    let result_page: String = redis_generate_html(pool, &key1).await?;
 
-    let result = redis_remove(pool.clone(), &key1).await;
-    println!("{:?}", result);
-    let result = redis_get_json(pool.clone(), &key1).await;
-    println!("{:?}", result);
-
-    Ok(HttpResponse::Ok().body("Successfully tested"))
+    Ok(HttpResponse::Ok().body(result_page))
 }
 
 
