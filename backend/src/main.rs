@@ -17,6 +17,11 @@ use crate::data::URL_REDIS;
 //Only for developing
 use rand::{Rng, thread_rng};
 
+macro_rules! paragraph {
+    ($title:expr, $content:expr) => {
+        Paragraph { title: $title.to_string(), content: $content.to_string() }
+    };
+}
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -30,8 +35,8 @@ async fn test(pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
     // * Creation of test model
     let value = HTMLPage {
         title: "test page".to_string(),
-        paragraphs: vec!(Paragraph {title: "mimmo".to_string(), content: "questo e' un ricchissimo paragrafo".to_string()}, 
-                         Paragraph {title: "paragrafo2".to_string(), content: "godo forte".to_string()}),
+        paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo"), 
+                         paragraph!("paragrafo2", "godo forte")),
     };
 
     // * RANDOM NUMBER FOR TESTING
@@ -47,7 +52,7 @@ async fn test(pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
     println!("{}", key);
     println!("{}", key1);
 
-    let result_page: String = redis_generate_html(pool, &key1).await?;
+    let result_page: String = redis_generate_html(pool.clone(), &key1).await?;
 
     Ok(HttpResponse::Ok().body(result_page))
 }
