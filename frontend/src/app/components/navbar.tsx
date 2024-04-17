@@ -3,7 +3,7 @@ import Image from "next/image"
 export default function Navbar(){
     return(
         <>
-            <nav className="flex justify-between items-center bg-[#F5F5F5]/[.35] backdrop-blur-sm fixed top-0 w-[100%] h-200"> 
+            <nav className="flex justify-between items-center bg-[#F5F5F5]/[.55] backdrop-blur-sm fixed top-0 w-[100%] h-200"> 
                 <div>
                     <Image 
                         className="rounded-full ml-8 py-3"
