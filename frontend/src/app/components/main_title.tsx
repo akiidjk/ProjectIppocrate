@@ -1,5 +1,5 @@
 import { Inter } from "next/font/google";
-import { Spotlight } from "./AcernityUI/Spotlight";
+import { Spotlight } from "./AcernityUI/spotlight";
 import { TypewriterEffectSmooth } from "./AcernityUI/type_writer";
 
 const inter = Inter({ subsets: ["latin"] });
