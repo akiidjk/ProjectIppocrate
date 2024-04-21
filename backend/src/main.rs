@@ -7,21 +7,14 @@ use std::process::exit;
 use actix_web::{get, App, HttpResponse, HttpServer, Responder};
 use actix_web::middleware::Logger;
 use actix_web::web::Data;
-use deadpool_redis::{Config, Pool, Runtime};
+use deadpool_redis::{Pool, Runtime};
 use env_logger::Env;
 use log::{error, info};
-use crate::model::{TestModel, HTMLPage, Paragraph};
-use crate::redis::{redis_create_page, redis_create_strings, redis_get_page, redis_generate_html, redis_get_string, redis_remove};
+use crate::model::{HTMLPage, Paragraph};
 use crate::data::URL_REDIS;
 
 //Only for developing
 use rand::{Rng, thread_rng};
-
-macro_rules! paragraph {
-    ($title:expr, $content:expr) => {
-        Paragraph { title: $title.to_string(), content: $content.to_string() }
-    };
-}
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -30,44 +23,34 @@ async fn hello() -> impl Responder {
 }
 
 #[get("/test")] //Simple test endpoint
-async fn test(pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
+async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
 
     // * Creation of test model
-    let value = HTMLPage {
+    let response_content = HTMLPage {
         title: "test page".to_string(),
         paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo"), 
                          paragraph!("paragrafo2", "godo forte")),
     };
 
-    // * RANDOM NUMBER FOR TESTING
-    let random_number: u32 = thread_rng().gen_range(1..=10000);
-    let key = format!("deadpool/test_key{}", random_number);
-    let random_number1: u32 = thread_rng().gen_range(1..=10000);
-    let key1 = format!("deadpool/test_key{}", random_number1);
+    let rnd: u32 = thread_rng().gen_range(1..=10000);
+    let key = format!("deadpool/test_key{}", rnd);
 
-    // * USE OF FUNCTION (write)
-    redis_create_strings(pool.clone(), &key, "Ciao").await?;
-    redis_create_page(pool.clone(), &key1, value).await?;
+    redis::create_page(redis_pool.clone(), &key, response_content).await?;
 
     println!("{}", key);
-    println!("{}", key1);
 
-    let result_page: String = redis_generate_html(pool.clone(), &key1).await?;
+    let response_page: String = redis::generate_html(redis_pool.clone(), &key).await?;
 
-    Ok(HttpResponse::Ok().body(result_page))
+    Ok(HttpResponse::Ok().body(response_page))
 }
-
-
-
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
     // * Init logger
     env_logger::init_from_env(Env::default().default_filter_or("debug"));
 
     // * Creation of redis config
-    let cfg = Config::from_url(URL_REDIS);
+    let cfg = deadpool_redis::Config::from_url(URL_REDIS);
     let pool = match cfg.create_pool(Some(Runtime::Tokio1)) {
         Ok(pool) => pool,
         Err(e) => {

@@ -21,3 +21,9 @@ pub struct Paragraph {
     pub content: String,
 }
 
+#[macro_export]
+macro_rules! paragraph {
+    ($title:expr, $content:expr) => {
+        Paragraph { title: $title.to_string(), content: $content.to_string() }
+    };
+}

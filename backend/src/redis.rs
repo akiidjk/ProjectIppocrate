@@ -1,7 +1,7 @@
 // File with redis call
 
-use actix_web::web::{Data};
-use deadpool_redis::{Pool};
+use actix_web::web::Data;
+use deadpool_redis::Pool;
 use deadpool_redis::redis::cmd;
 use crate::error_manager::ErrorManager;
 use crate::model::HTMLPage;
@@ -37,8 +37,8 @@ macro_rules! remove_redis_value {
 }
 
 // * ---------------------------- CREATION ---------------------------------
-pub async fn redis_create_strings(pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
-    let mut conn = pool.get().await?;
+pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
+    let mut conn = redis_pool.get().await?;
 
     let formatted_key = format!("deadpool/{}", key);
 
@@ -47,8 +47,8 @@ pub async fn redis_create_strings(pool: Data<Pool>, key: &str, value: &str) -> R
     Ok(true)
 }
 
-pub async fn redis_create_page(pool: Data<Pool>, key:&str, value: HTMLPage) -> Result<bool, ErrorManager> {
-    let mut conn = pool.get().await?;
+pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: HTMLPage) -> Result<bool, ErrorManager> {
+    let mut conn = redis_pool.get().await?;
 
     let formatted_key = format!("deadpool/{}", key);
     let value_str = serde_json::to_string(&value)?;
@@ -60,20 +60,20 @@ pub async fn redis_create_page(pool: Data<Pool>, key:&str, value: HTMLPage) -> R
 
 // * ---------------------------- GET ---------------------------------
 
-pub async fn redis_get_string(pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
-    let mut conn = pool.get().await.map_err(ErrorManager::PoolError)?;
+pub async fn get_string(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
+    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
     let formatted_key = format!("deadpool/{}", key);
-    let value: String = get_redis_value!(conn,formatted_key);
+    let value: String = get_redis_value!(conn, formatted_key);
     Ok(value)
 }
 
 
-pub async fn redis_get_page(pool: Data<Pool>, key: &str) -> Result<HTMLPage, ErrorManager> {
-    let mut conn = pool.get().await.map_err(ErrorManager::PoolError)?;
+pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<HTMLPage, ErrorManager> {
+    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
     let formatted_key = format!("deadpool/{}", key);
-    let value_str: String = get_redis_value!(conn,formatted_key);
+    let value_str: String = get_redis_value!(conn, formatted_key);
 
     let model: HTMLPage = serde_json::from_str(&value_str)
         .map_err(ErrorManager::SerdeError)?;
@@ -81,30 +81,30 @@ pub async fn redis_get_page(pool: Data<Pool>, key: &str) -> Result<HTMLPage, Err
     Ok(model)
 }
 
-pub async fn redis_generate_html(pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
-    let page_data: HTMLPage = redis_get_page(pool, key).await?;
+pub async fn generate_html(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
+    let page_data: HTMLPage = get_page(redis_pool, key).await?;
     
     let mut result: String = format!("<title>{}</title>\n", page_data.title);
 
-    for p in page_data.paragraphs.iter() {
-        result.push_str(&format!("<p>{}</p>\n{}", p.title, p.content));
+    for paragraph in page_data.paragraphs.iter() {
+        result.push_str(&format!("<p>{}</p>\n{}", paragraph.title, paragraph.content));
     }
 
     Ok(result)
 }
 
-pub async fn redis_remove(pool: Data<Pool>,key: &str) -> Result<bool, ErrorManager> {
-    let mut conn = pool.get().await.map_err(ErrorManager::PoolError)?;
+pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorManager> {
+    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
     let formatted_key = format!("deadpool/{}", key);
 
-    remove_redis_value!(conn,formatted_key);
+    remove_redis_value!(conn, formatted_key);
 
     Ok(true)
 }
 
 //
-// pub async fn redis_modify(pool: Data<Pool>) -> Result<bool, RedisError> {
-//     let mut conn = pool.get().await.map_err(|_| RedisError::from((redis::ErrorKind::IoError, "Failed to get connection from pool")))?;
+// pub async fn redis_modify(redis_pool: Data<Pool>) -> Result<bool, RedisError> {
+//     let mut conn = redis_pool.get().await.map_err(|_| RedisError::from((redis::ErrorKind::IoError, "Failed to get connection from pool")))?;
 // }
 //
