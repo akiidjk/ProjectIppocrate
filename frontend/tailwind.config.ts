@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss"
 
+const plugin = require('tailwindcss/plugin');
+
 const config = {
   darkMode: ["class"],
   content: [
@@ -18,31 +20,6 @@ const config = {
       },
     },
     extend: {
-      animation: {
-        spotlight: "spotlight 2s ease .75s 1 forwards",
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        spotlight: {
-          "0%": {
-            opacity: "0",
-            transform: "translate(-72%, -62%) scale(0.5)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "translate(-50%,-40%) scale(1)",
-          },
-        },
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -83,9 +60,51 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        spotlight: {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translate(-50%,-40%) scale(1)",
+          },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        spotlight: "spotlight 2s ease .75s 1 forwards",
+
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(function ({ addVariant, e, postcss }) {
+	  addVariant('firefox', ({ container, separator }) => {
+		const isFirefoxRule = postcss.atRule({
+		  name: '-moz-document',
+		  params: 'url-prefix()',
+		});
+		isFirefoxRule.append(container.nodes);
+		container.append(isFirefoxRule);
+		isFirefoxRule.walkRules((rule) => {
+		  rule.selector = `.${e(
+			`firefox${separator}${rule.selector.slice(1)}`
+		  )}`;
+		});
+	  });
+	}),],
 } satisfies Config
 
 export default config
