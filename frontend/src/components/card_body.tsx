@@ -2,7 +2,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { cn } from "../utils/cn";
 import React from "react";
-import { BentoGrid, BentoGridItem } from "../components/AcernityUI/bentogrid";
+import { BentoGrid, BentoGridItem } from "./AcernityUI/bentogrid";
 import {
   IconClipboardCopy,
   IconFileBroken,

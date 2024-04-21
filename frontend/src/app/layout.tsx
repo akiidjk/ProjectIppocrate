@@ -20,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <Providers> */}
         <body className={montserrat.className}>{children}</body>
-      {/* </Providers> */}
     </html>
   );
 }
