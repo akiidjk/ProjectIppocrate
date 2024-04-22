@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { Montserrat } from "next/font/google";
 const World = dynamic(() => import("./AcernityUI/globe").then((m) => m.World), {
     ssr: false,
   });
@@ -409,5 +408,3 @@ export default function MainBody(){
         </>
     )
 }
-
-//                 <World data={sampleArcs} globeConfig={globeConfig} />;

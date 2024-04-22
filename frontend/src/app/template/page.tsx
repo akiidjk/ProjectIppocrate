@@ -1,71 +1,40 @@
 import Divider from "@/components/divider";
 import Navbar from "../../components/navbar";
-import Image from "next/image"
+import { TracingBeam } from "@/components/AcernityUI/tracing-beam";
+import TitlePart from "./components/title_part";
+import FirstPart from "./components/first_part";
+import SecondPart from "./components/second_part";
+import ThirdPart from "./components/third_part";
+import CardPart from "./components/card_part";
+
+
+
+
+{/* <div className="flex m-12">
+<h1 className={`text-[130px] ${inter.className} font-bold ms-auto me-auto`}>Titolo pagina</h1>
+</div> */}
+
+
+const version:number = 1
+
 
 export default function SubjectPage(){
     return (
         <div>
+            <TracingBeam className="px-6">
             <Navbar/>
             {/* Title part */}
-            <div className="flex m-12">
-                <h1 className="text-6xl font-bold ms-auto me-auto">Titolo pagina</h1>
-            </div>
+            <TitlePart/>
             {/* First part */}
-            <div className="mt-20 flex">
-                <div className="w-[60%] ml-12 mr-4">
-                    <Image
-                        className="rounded-2xl"
-                        width={1000}
-                        height={0}
-                        src="/img2.jpg"
-                        alt={"image"}        
-                    />
-                </div>
-                <div className="w-[30%] float-right  mr-12 ml-4">
-                    <h1 className="text-3xl font-bold mb-4">Titolo paragrafo 1</h1>
-                    <p>
-                        Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing consectetur fugiat voluptate dolor sunt incididunt. Voluptate quis dolor irure minim tempor incididunt ex pariatur cupidatat.Aliqua est pariatur aliquip in.Ut aute fugiat culpa qui non voluptate 
-                    </p>
-                </div>
-            </div>
+            <FirstPart/>
             {/* Second part */}
-            <div className="mt-20 flex">
-                <div className="w-[70%] float-right  ml-12 mr-4">
-                    <p>
-                        Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing consectetur fugiat voluptate dolor sunt incididunt. Voluptate quis dolor irure minim tempor incididunt ex pariatur cupidatat.Aliqua est pariatur aliquip in.Ut aute fugiat culpa qui non voluptate Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing
-                    </p>
-                </div>
-                <div className="w-[30%] mr-12 ml-4">
-                    <Image
-                        className="rounded-full"
-                        width={200}
-                        height={10}
-                        src="/gabibboo_navbar.jpg"
-                        alt={"image"}        
-                    />
-                </div>
-            </div>
+            <SecondPart/>
             {/* Third part */}
-            <div className="flex m-28">
-                <div className="ms-auto me-auto">
-                    <h1 className="text-3xl font-bold mb-10 text-center">Titolo paragrafo 2</h1>
-                    <p>
-                        Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing consectetur fugiat voluptate dolor sunt incididunt. Voluptate quis dolor irure minim tempor incididunt ex pariatur cupidatat.Aliqua est pariatur aliquip in.Ut aute fugiat culpa qui non voluptate
-                        Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing consectetur fugiat voluptate dolor sunt incididunt. Voluptate quis dolor irure minim tempor incididunt ex pariatur cupidatat.Aliqua est pariatur aliquip in.Ut aute fugiat culpa qui non voluptate 
-                        Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing consectetur fugiat voluptate dolor sunt incididunt. Voluptate quis dolor irure minim tempor incididunt ex pariatur cupidatat.Aliqua est pariatur aliquip in.Ut aute fugiat culpa qui non voluptate 
-                    </p>
-                </div>
-            </div>
+            <ThirdPart/>
             {/* Final part */}
             <Divider/>
-            <div>
-                <div className ="parent">
-                    <div className="div1 h-[400px] bg-gray-500 w-[200px] rounded-3xl"></div>
-                    <div className="div2 h-[400px] bg-gray-500 w-[200px] rounded-3xl"></div>
-                    <div className="div3 h-[400px] bg-gray-500 w-[200px] rounded-3xl"></div>
-                </div>
-            </div>
-
+            <CardPart/>
+            </TracingBeam>
         </div>
     )
 }

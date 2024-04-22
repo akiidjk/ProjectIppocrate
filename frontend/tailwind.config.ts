@@ -1,6 +1,9 @@
 import type { Config } from "tailwindcss"
 
 const plugin = require('tailwindcss/plugin');
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
 
 const config = {
   darkMode: ["class"],
@@ -89,22 +92,35 @@ const config = {
     },
   },
   plugins: [
+    addVariablesForColors,
     require("tailwindcss-animate"),
-    plugin(function ({ addVariant, e, postcss }) {
-	  addVariant('firefox', ({ container, separator }) => {
-		const isFirefoxRule = postcss.atRule({
-		  name: '-moz-document',
-		  params: 'url-prefix()',
-		});
-		isFirefoxRule.append(container.nodes);
-		container.append(isFirefoxRule);
-		isFirefoxRule.walkRules((rule) => {
-		  rule.selector = `.${e(
-			`firefox${separator}${rule.selector.slice(1)}`
-		  )}`;
-		});
-	  });
-	}),],
+    plugin(function ({ addVariant, e, postcss }: { addVariant: any, e: any, postcss: any }) {
+      addVariant('firefox', ({ container, separator }: { container: any, separator: any }) => {
+        const isFirefoxRule = postcss.atRule({
+          name: '-moz-document',
+          params: 'url-prefix()',
+        });
+        isFirefoxRule.append(container.nodes);
+        container.append(isFirefoxRule);
+        isFirefoxRule.walkRules((rule:any) => {
+          rule.selector = `.${e(
+            `firefox${separator}${rule.selector.slice(1)}`
+          )}`;
+        });
+      });
+	}),
+],
 } satisfies Config
+
+function addVariablesForColors({ addBase, theme }: any) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+ 
+  addBase({
+    ":root": newVars,
+  });
+}
 
 export default config

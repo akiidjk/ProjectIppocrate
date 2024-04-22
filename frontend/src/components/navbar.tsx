@@ -10,8 +10,8 @@ export default function Navbar(){
                                 <Image 
                                 className="rounded-full ml-9 py-3"
                                 src="/gabibboo_navbar.jpg"
-                                width={50}
-                                height={50}
+                                width={45}
+                                height={45}
                                 alt="Picture of gabibbo"
                             />
                         </span>
