@@ -1,5 +1,5 @@
 import { Boxes } from "@/components/AcernityUI/background-boxes";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });

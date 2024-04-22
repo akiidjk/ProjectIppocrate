@@ -11,6 +11,8 @@ declare module "@react-three/fiber" {
   }
 }
 
+// TODO ask help from acernityUI support
+
 extend({ ThreeGlobe });
 
 const RING_PROPAGATION_SPEED = 3;

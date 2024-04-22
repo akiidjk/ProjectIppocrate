@@ -1,5 +1,3 @@
-
-
 export default function CardPart(){
     return (
         <div className="m-24">

@@ -1,5 +1,3 @@
-
-
 export default function ThirdPart(){
     return (
         <div className="flex m-28">
