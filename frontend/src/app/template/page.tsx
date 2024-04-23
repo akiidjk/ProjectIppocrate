@@ -1,6 +1,6 @@
-import Divider from "@/components/divider";
-import Navbar from "../../components/navbar";
-import { TracingBeam } from "@/components/AcernityUI/tracing-beam";
+import Divider from "../components/divider";
+import Navbar from "../components/navbar";
+import { TracingBeam } from "../components/AcernityUI/tracing-beam";
 import TitlePart from "./components/title_part";
 import FirstPart from "./components/first_part";
 import SecondPart from "./components/second_part";
@@ -8,11 +8,6 @@ import ThirdPart from "./components/third_part";
 import CardPart from "./components/card_part";
 
 
-
-
-{/* <div className="flex m-12">
-<h1 className={`text-[130px] ${inter.className} font-bold ms-auto me-auto`}>Titolo pagina</h1>
-</div> */}
 
 
 const version:number = 1
@@ -24,18 +19,22 @@ export default function SubjectPage(){
         <div>
             <Navbar/>
             <TracingBeam className="px-6">
-            {/* Title part */}
             <TitlePart title="Titolo 1" subtitle="Sottotitolo"/>
-            {/* First part */}
-            <FirstPart src={"/img2.jpg"} title={"Titolo 2"} content={content1}/>
-            {/* Second part */}
-            <SecondPart src={"/gabibboo_navbar.jpg"} content={content1}/>
-            {/* Third part */}
-            <ThirdPart title={"Titolo 3"} content={content1}/>
-            {/* Final part */}
+            <FirstPart src={"/img2.jpg"} title={"Titolo 2"} content={content1} version={0}/>
+<SecondPart src={"/gabibboo_navbar.jpg"} content={content1} version={0}/>
+
+<ThirdPart title={"Titolo 3"} content={content1}/>
             <Divider/>
             <CardPart/>
             </TracingBeam>
         </div>
     )
 }
+
+// TODO GENERALIZE
+/*
+ <FirstPart src={"/img2.jpg"} title={"Titolo 2"} content={content1} version={0}/>
+<SecondPart src={"/gabibboo_navbar.jpg"} content={content1} version={0}/>
+
+<ThirdPart title={"Titolo 3"} content={content1}/>
+Final part */

@@ -86,10 +86,7 @@ export default function BodyCard(){
                         />
                     ))}
                     </BentoGrid>
-                
-                
                     <ButtonSeeMore/>
-
             </div>
         </>
     )

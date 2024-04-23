@@ -1,3 +1,4 @@
+"use client";
 import dynamic from "next/dynamic";
 import ButtonSeeMore from "./button_see_more";
 
