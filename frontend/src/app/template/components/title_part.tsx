@@ -1,20 +1,21 @@
-import { Boxes } from "@/components/AcernityUI/background-boxes";
 import { cn } from "@/utils/cn";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
+interface Props {
+    title:string,
+    subtitle:string
+}
 
-export default function TitlePart(){
+export default function TitlePart(props:Props){
     return (
-        <div className="h-96 relative w-full overflow-hidden  ml-12 mr-12 bg-slate-900 flex flex-col items-center justify-center rounded-lg">
-            <div className="absolute inset-0 w-full h-full bg-slate-900 z-20 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
-            <Boxes />
-            <h1 className={cn(`text-[130px]  ${inter.className} font-bold text-[#fdfdfd] relative z-20`)}>
-                Titolo 1
+        <div className="h-96 relative w-full overflow-hidden  ml-12 mr-12 flex flex-col items-center justify-center rounded-lg">
+            <h1 className={cn(`text-[138px]  ${inter.className} font-bold relative z-20`)}>
+                {props.title}
             </h1>
-            <p className="text-center mt-2 text-neutral-300 relative z-20">
-                Sotto titolo
+            <p className="text-center mt-2 relative z-20">
+            {props.subtitle}
             </p>
         </div>
     )

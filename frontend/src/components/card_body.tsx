@@ -9,6 +9,7 @@ import {
   IconSignature,
   IconTableColumn,
 } from "@tabler/icons-react";
+import ButtonSeeMore from "./button_see_more";
 
 interface Props {
     src: string
@@ -87,9 +88,8 @@ export default function BodyCard(){
                     </BentoGrid>
                 
                 
-                <div className="flex">
-                    <Button variant="outline" className="ms-auto me-auto">Button</Button>
-                </div>
+                    <ButtonSeeMore/>
+
             </div>
         </>
     )

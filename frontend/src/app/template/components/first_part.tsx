@@ -1,7 +1,12 @@
 import Image from "next/image"
 
+interface Props{
+    src:string
+    title:string
+    content:string
+}
 
-export default function FirstPart(){
+export default function FirstPart(props:Props){
     return (
         <div className="mt-20 flex">
                 <div className="w-[60%] ml-12 mr-4">
@@ -10,7 +15,7 @@ export default function FirstPart(){
                         height={570}
                         className="rounded-2xl"
                         // sizes="100vw"
-                        src="/img2.jpg"
+                        src={props.src}
                         alt={"image"}       
                         // style={{
                         //   width: '100%',
@@ -19,9 +24,9 @@ export default function FirstPart(){
                     />
                 </div>
                 <div className="w-[30%] float-right  mr-12 ml-4">
-                    <h1 className="text-[54px]   font-bold mb-4">Titolo paragrafo 1</h1>
+                    <h1 className="text-[54px]   font-bold mb-4">{props.title}</h1>
                     <p>
-                        Magna ipsum ullamco dolore dolor laboris nulla ut qui ullamco reprehenderit ad non enim ullamco. Et officia pariatur eiusmod amet excepteur fugiat. Officia nisi ea pariatur laboris proident nulla adipisicing consectetur fugiat voluptate dolor sunt incididunt. Voluptate quis dolor irure minim tempor incididunt ex pariatur cupidatat.Aliqua est pariatur aliquip in.Ut aute fugiat culpa qui non voluptate 
+                        {props.content}
                     </p>
                 </div>
             </div>
