@@ -56,9 +56,9 @@ export default function SubjectList(){
         return(
           <div> 
               <Navbar/>
-              <div className="m-8">
-                <StickyScroll content={content} />
-              </div>  
+              <div  className="flex h-[90vh]">
+                <StickyScroll content={content} />  
+              </div>
           </div>
         )
 }
