@@ -2,19 +2,37 @@ mod data;
 mod model;
 mod redis;
 mod error_manager;
+mod auth;
 
 use std::process::exit;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post};
 use actix_web::middleware::Logger;
 use actix_web::web::Data;
 use deadpool_redis::{Pool, Runtime};
-use env_logger::Env;
+use env_logger::{Env, init};
 use log::{error, info};
 use crate::model::{HTMLPage, Paragraph};
 use crate::data::URL_REDIS;
 
+use actix_web_httpauth::{
+    extractors::{
+        bearer::{self,BearerAuth},
+        AuthenticationError
+    },
+    middleware::HttpAuthentication,
+};
+use hmac::{Hmac,Mac};
+use jwt::VerifyWithKey;
+use serde::{Deserialize,Serialize};
+use sha2::Sha256;
+
+
+
 //Only for developing
 use rand::{Rng, thread_rng};
+use crate::auth::{basic_auth, validator};
+// use crate::auth::{login, validator};
+use crate::redis::init_admin;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -39,9 +57,25 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
 
     println!("{}", key);
 
+    let password = redis::get_admin(redis_pool.clone()).await?;
+    println!("{:?}", password);
+
     let response_page: String = redis::generate_html(redis_pool.clone(), &key).await?;
 
     Ok(HttpResponse::Ok().body(response_page))
+}
+
+
+#[get("/get_page")]
+async fn get_page() -> impl Responder {
+    info!("Handling request for /hello endpoint");
+    HttpResponse::Ok().body("Server online!")
+}
+
+#[post("/admin/create_page")]
+async fn create_page() -> impl Responder {
+    info!("Handling request for /hello endpoint");
+    HttpResponse::Ok().body("Server online!")
 }
 
 #[actix_web::main]
@@ -72,13 +106,23 @@ async fn main() -> std::io::Result<()> {
 
     // * Init the variable to share
     let pool_data = Data::new(pool);
+    let pool_data_clone = pool_data.clone();
+
+    redis::init_admin(pool_data).await.unwrap();
 
     HttpServer::new(move || {
+        // let bearer_middleware = HttpAuthentication::bearer(validator);
         App::new()
-            .app_data(pool_data.clone())
+            .app_data(pool_data_clone.clone())
             .service(hello)
             .service(test)
+            .service(basic_auth)
             .wrap(Logger::default())
+            // .service( // TODO FIX VALIDATOR
+            //     web::scope("")
+            //         .wrap(bearer_middleware)
+            //         .service(basic_auth)
+            // )
     })
         .bind(("0.0.0.0", 8000))?
         .run()

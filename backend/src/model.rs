@@ -27,3 +27,15 @@ macro_rules! paragraph {
         Paragraph { title: $title.to_string(), content: $content.to_string() }
     };
 }
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct TokenClaims{
+    pub(crate) id: i32
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Admin {
+    pub id: i32,
+    pub username: String,
+    pub password: String,
+}
