@@ -9,30 +9,19 @@ use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post};
 use actix_web::middleware::Logger;
 use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
-use env_logger::{Env, init};
+use env_logger::{Env};
 use log::{error, info};
 use crate::model::{HTMLPage, Paragraph, TestModel, TokenClaims};
 use crate::data::URL_REDIS;
 
 use actix_web_httpauth::{
-    extractors::{
-        bearer::{self,BearerAuth},
-        AuthenticationError
-    },
     middleware::HttpAuthentication,
 };
-use hmac::{Hmac,Mac};
-use jwt::VerifyWithKey;
 use serde::{Deserialize,Serialize};
-use sha2::Sha256;
-
-
 
 //Only for developing
 use rand::{Rng, thread_rng};
 use crate::auth::{basic_auth, validator};
-// use crate::auth::{login, validator};
-use crate::redis::init_admin;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -73,14 +62,14 @@ async fn get_page(redis_pool: Data<Pool>) -> impl Responder {
 }
 
 #[post("/admin/create_page")]
-async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>,body: Json<TestModel>) -> impl Responder {
+async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>,body: Json<HTMLPage>) -> impl Responder {
 
     match req_user {
         Some(user) => {
-            let page: TestModel = body.into_inner();
+            let page: HTMLPage = body.into_inner();
             // Query to add the page
             println!("{:?}",page);
-            HttpResponse::Unauthorized().json("Page created")
+            HttpResponse::Ok().json("Page created")
         }
         _ => HttpResponse::Unauthorized().json("Unable to verify identity")
 

@@ -1,20 +1,17 @@
 use deadpool_redis::redis::cmd;
-use actix_web::{dev::ServiceRequest, error::Error, web::{self, Data}, App, HttpMessage, HttpServer, get, Responder, HttpResponse};
-use actix_web::web::Json;
+use actix_web::{dev::ServiceRequest, error::Error, web::{Data}, HttpMessage, get, Responder, HttpResponse};
 
 use actix_web_httpauth::{
     extractors::{
         bearer::{self, BearerAuth},
         AuthenticationError,
     },
-    middleware::HttpAuthentication,
 };
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use argonautica::{Hasher, Verifier};
 use deadpool_redis::Pool;
 use hmac::{Hmac, Mac};
 use jwt::{SignWithKey, VerifyWithKey};
-use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 use crate::data::{HASH_SECRET, JWT_SECRET};
 use crate::error_manager::ErrorManager;
@@ -24,11 +21,10 @@ use crate::redis::get_admin;
 use crate::set_redis_value;
 
 
-// TODO refactor the function
 pub async fn create_user(redis_pool: Data<Pool>, body: Admin) -> Result<String, ErrorManager> {
     let mut user: Admin = body;
 
-    let mut conn = redis_pool.get().await?;
+    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
     let hash_secret = HASH_SECRET.to_string();
     let mut hasher = Hasher::default();
@@ -44,34 +40,20 @@ pub async fn create_user(redis_pool: Data<Pool>, body: Admin) -> Result<String, 
 
     let key: String = "auth/admin".to_string();
 
-    //TODO Substitute with redis set user
-    log::debug!("{}", format!("{:?}", user_string));
-
     set_redis_value!(conn, key, user_string);
 
     Ok("User created successfully".to_string())
 }
 
-#[derive(Serialize,Deserialize)]
-struct AuthUser {
-    id: i32,
-    username: String,
-    password: String,
-}
-
-// TODO MAKE REFACTORING
-
 #[get("/admin/auth")]
 pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl Responder {
+
     let jwt_secret: Hmac<Sha256> = Hmac::new_from_slice(
         JWT_SECRET
             .as_bytes(),
     ).unwrap();
 
-    let username = credentials.user_id();
-    let password = credentials.password();
-
-    match password {
+    match credentials.password() {
         None => HttpResponse::Unauthorized().json("Must provide username and password"),
         Some(pass) => {
             match get_admin(redis_pool).await
@@ -92,7 +74,7 @@ pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl 
                         let token_str = claims.sign_with_key(&jwt_secret).unwrap();
                         HttpResponse::Ok().json(token_str)
                     } else {
-                        HttpResponse::Unauthorized().json("Incorrect username or password")
+                        HttpResponse::Unauthorized().json("Incorrect password")
                     }
                 }
                 Err(error) => HttpResponse::InternalServerError().json(format!("{:?}", error)),

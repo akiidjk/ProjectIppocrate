@@ -30,12 +30,12 @@ macro_rules! paragraph {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct TokenClaims{
-    pub(crate) id: i32
+    pub(crate) id: String
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Admin {
-    pub id: i32,
+    pub id: String,
     pub username: String,
     pub password: String,
 }

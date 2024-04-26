@@ -6,7 +6,8 @@ use deadpool_redis::redis::cmd;
 use crate::auth::create_user;
 use crate::error_manager::ErrorManager;
 use crate::model::{Admin, HTMLPage};
-
+use uuid::Uuid;
+use crate::data::PASSWORD_ADMIN;
 // * --------------------------- MACRO ----------------------------
 
 #[macro_export]
@@ -106,22 +107,33 @@ pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorMana
 }
 
 
-// * AUTHENTICATION
+// * ---------------------------- AUTHENTICATION ----------------------------
 
 pub async fn init_admin(redis_pool: Data<Pool>) -> Result<bool, ErrorManager> {
+
     let value = Admin {
-        id: 0,
+        id: Uuid::new_v4().to_string(),
         username: "admin".to_string(),
-        password: "password".to_string()
+        password: PASSWORD_ADMIN.to_string()
     };
-    create_user(redis_pool, value).await.unwrap();
-    Ok(true)
+
+    match create_user(redis_pool, value).await {
+        Ok(_) => {
+            Ok(true)
+        }
+        Err(error) => {
+            log::error!("{:?}",error);
+            Ok(false)
+        }
+    }
 }
 
 pub async fn get_admin(redis_pool: Data<Pool>) -> Result<Admin, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
+
     let key: String = "auth/admin".to_string();
     let value: String =  get_redis_value!(conn,key);
+
     let model: Admin = serde_json::from_str(&value)
         .map_err(ErrorManager::SerdeError)?;
 
