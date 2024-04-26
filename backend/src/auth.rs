@@ -45,7 +45,7 @@ pub async fn create_user(redis_pool: Data<Pool>, body: Admin) -> Result<String, 
     let key: String = "auth/admin".to_string();
 
     //TODO Substitute with redis set user
-    log::info!("{}", format!("{:?}", user_string));
+    log::debug!("{}", format!("{:?}", user_string));
 
     set_redis_value!(conn, key, user_string);
 
@@ -61,13 +61,13 @@ struct AuthUser {
 
 // TODO MAKE REFACTORING
 
-#[get("/auth")]
+#[get("/admin/auth")]
 pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl Responder {
     let jwt_secret: Hmac<Sha256> = Hmac::new_from_slice(
         JWT_SECRET
             .as_bytes(),
     ).unwrap();
-    log::info!("DENTRO AUTH");
+
     let username = credentials.user_id();
     let password = credentials.password();
 
@@ -100,6 +100,8 @@ pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl 
         }
     }
 }
+
+
 
 pub async fn validator(
     req: ServiceRequest,

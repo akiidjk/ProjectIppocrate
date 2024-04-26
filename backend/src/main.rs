@@ -7,11 +7,11 @@ mod auth;
 use std::process::exit;
 use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post};
 use actix_web::middleware::Logger;
-use actix_web::web::Data;
+use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
 use env_logger::{Env, init};
 use log::{error, info};
-use crate::model::{HTMLPage, Paragraph};
+use crate::model::{HTMLPage, Paragraph, TestModel, TokenClaims};
 use crate::data::URL_REDIS;
 
 use actix_web_httpauth::{
@@ -67,15 +67,24 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
 
 
 #[get("/get_page")]
-async fn get_page() -> impl Responder {
+async fn get_page(redis_pool: Data<Pool>) -> impl Responder {
     info!("Handling request for /hello endpoint");
     HttpResponse::Ok().body("Server online!")
 }
 
 #[post("/admin/create_page")]
-async fn create_page() -> impl Responder {
-    info!("Handling request for /hello endpoint");
-    HttpResponse::Ok().body("Server online!")
+async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>,body: Json<TestModel>) -> impl Responder {
+
+    match req_user {
+        Some(user) => {
+            let page: TestModel = body.into_inner();
+            // Query to add the page
+            println!("{:?}",page);
+            HttpResponse::Unauthorized().json("Page created")
+        }
+        _ => HttpResponse::Unauthorized().json("Unable to verify identity")
+
+    }
 }
 
 #[actix_web::main]
@@ -111,18 +120,18 @@ async fn main() -> std::io::Result<()> {
     redis::init_admin(pool_data).await.unwrap();
 
     HttpServer::new(move || {
-        // let bearer_middleware = HttpAuthentication::bearer(validator);
+        let bearer_middleware = HttpAuthentication::bearer(validator);
         App::new()
             .app_data(pool_data_clone.clone())
             .service(hello)
             .service(test)
             .service(basic_auth)
             .wrap(Logger::default())
-            // .service( // TODO FIX VALIDATOR
-            //     web::scope("")
-            //         .wrap(bearer_middleware)
-            //         .service(basic_auth)
-            // )
+            .service( 
+                web::scope("")
+                    .wrap(bearer_middleware)
+                    .service(create_page)
+            )
     })
         .bind(("0.0.0.0", 8000))?
         .run()

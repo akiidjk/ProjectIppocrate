@@ -1,5 +1,3 @@
-use std::string::ToString;
-
 pub const URL_REDIS: &str = "redis://:password@redis:6379"; //PROD
 
 pub const JWT_SECRET: &str  = "testkeyjwtaaaaaa";
