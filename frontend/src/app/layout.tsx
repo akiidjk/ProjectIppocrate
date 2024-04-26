@@ -1,16 +1,12 @@
-import { Inter } from "next/font/google";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Salute e Benessere",
   description: "Sito descrittivo del obbiettivo salute e benessere del agenda 2030 comprensivo di tutte le materie scolasite",
 };
-
 
 
 export default function RootLayout({
@@ -20,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <Providers> */}
         <body className={montserrat.className}>{children}</body>
-      {/* </Providers> */}
     </html>
   );
 }
