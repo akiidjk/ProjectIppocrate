@@ -1,6 +1,6 @@
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-
+import Provider from "@/context/Providers";
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata = {
@@ -8,6 +8,7 @@ export const metadata = {
   description: "Sito descrittivo del obbiettivo salute e benessere del agenda 2030 comprensivo di tutte le materie scolasite",
 };
 
+//* https://www.youtube.com/watch?v=b3pbgBmEGcU RESOURCE
 
 export default function RootLayout({
   children,
@@ -15,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-        <body className={montserrat.className}>{children}</body>
-    </html>
+    <Provider>
+      <html lang="en">
+          <body className={montserrat.className}>{children}</body>
+      </html>
+    </Provider>
   );
 }

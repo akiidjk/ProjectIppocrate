@@ -1,3 +1,5 @@
+"use client"
+import { signIn } from "next-auth/react"
 import Image from "next/image"
 
 export default function Navbar(){
@@ -18,7 +20,8 @@ export default function Navbar(){
                             <div className="flex space-x-4 text-gray-900">
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#" >Home</a>
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#">School</a>
-                                <a className="hover:text-[#4e69c3]  text-2xl" href="#">Credits</a> 
+                                <a className="hover:text-[#4e69c3]  text-2xl" href="#">Credits</a>
+                                {/* <a className="hover:text-[#4e69c3]  text-2xl" href="#" onClick={() => {signIn()}}>Admin</a>  */}
                             </div>
                     </div>
                 </div>
