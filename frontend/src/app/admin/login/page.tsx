@@ -21,23 +21,21 @@ export default function LoginAdminPage(){
       event.preventDefault();
   
       const formData = new FormData(event.currentTarget);
-  
-      setData({
-          ...data,
-          username: formData.get("username")?.toString() ?? '',
-          password: formData.get("password")?.toString() ?? ''
-      });
-  
-      try {
-          await signIn("credentials", {
-              ...data,
-              redirect: false,
-          });
-          
+
+      const username = formData.get("username")?.toString() ?? 'null';
+      const password = formData.get("password")?.toString() ?? 'null';
+
+        try {
+            // Assuming signIn is an asynchronous function
+            await signIn("credentials", {
+                username,
+                password,
+                redirect: false,
+            });
+
           router.push("/admin/create_page");
       } catch (error) {
           console.error("Errore durante il login:", error);
-          // Gestisci l'errore di autenticazione qui
       }
     };
 
