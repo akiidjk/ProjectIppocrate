@@ -1,9 +1,9 @@
 import NextAuth from "next-auth/next";
 import type { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
+import {getAuth} from "@/app/api/api";
 // import bcrypt from "bcrypt";
 
-const ENDPOINT_AUTH = "http://localhost:8000/admin/auth";
 
 export const authOptions: AuthOptions = {
     session : {
@@ -14,15 +14,6 @@ export const authOptions: AuthOptions = {
     },
     jwt: {
         maxAge: 60 * 60,
-        // async encode(params: { token: JWT,secret: string,maxAge: number }): Promise<string> {
-        //     return String(params.token);
-        // },
-        // async decode(params: {token: string,secret: string}): Promise<JWT | null> {
-        //     console.log(params.token)
-        //     console.log(params.secret)
-        //     console.log(jwt_decode(params.token))
-        //     return {}
-        // },
     },
     callbacks: {
         async jwt({ user, token }) {
@@ -37,6 +28,8 @@ export const authOptions: AuthOptions = {
     debug: true,
     providers : [
         CredentialsProvider({
+            id: "",
+            type: "credentials",
             name: 'credentials',
             credentials: {
               username: { label: "Username", type: "text", placeholder: "jsmith" },
@@ -48,22 +41,10 @@ export const authOptions: AuthOptions = {
                     return null
                 }
 
-                let headers = {
-                    'Authorization': `Basic ${btoa(`${credentials?.username}:${credentials?.password}`)}`
-                }
+                const result = await getAuth(credentials)
+                const user = result.value
 
-                const res = await fetch(ENDPOINT_AUTH, {
-                    method: 'GET',
-                    headers: headers
-                })
-
-                const token = await res.json()
-
-                const user = {
-                    token: token,
-                }
-
-                if (res.ok && user) {
+                if (result.success && user) {
                     return user
                 }
                 return null
