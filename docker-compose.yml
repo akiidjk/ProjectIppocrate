@@ -2,17 +2,19 @@ version: '3.8'
 
 #@danmig06 for access to an service with the ip not use the IP but the name of image like "http://backend:8080" 
 
+#! This docker file is only for DEVELPMENT
+
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      redis:
-        condition: service_healthy
+  # backend:
+  #   build: ./backend
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
 
   # frontend:
   #   build: ./frontend
@@ -39,3 +41,4 @@ services:
 
 volumes:
   redis-data:
+
