@@ -1,35 +1,55 @@
 import NextAuth from "next-auth/next";
 import type { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
-import bcrypt from "bcrypt";
+import {getAuth} from "@/app/api/api";
+// import bcrypt from "bcrypt";
+
 
 export const authOptions: AuthOptions = {
     session : {
       strategy: "jwt"
     },
+    adapter: {
+
+    },
+    jwt: {
+        maxAge: 60 * 60,
+    },
+    callbacks: {
+        async jwt({ user, token }) {
+            //TODO Fix the issue of the parameter (In fact, if you add a parameter to user when trying to retrieve the added value and thus not a default key, it probably disappears due to a TYPE issue )
+            if (user) {
+                token.name = user.token;
+            }
+            return token;
+        },
+    },
     secret: "WMrnFPX8Gafw1BFouLJRRKgCgf/VtKutrgHoScVPobc=",
-    debug: true, //production
+    debug: true,
     providers : [
         CredentialsProvider({
+            id: "",
+            type: "credentials",
             name: 'credentials',
             credentials: {
               username: { label: "Username", type: "text", placeholder: "jsmith" },
               password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
-                const res = await fetch("/your/endpoint", {
-                    method: 'POST',
-                    body: JSON.stringify(credentials),
-                    headers: { "Content-Type": "application/json" }
-                })
-                const user = await res.json()
-            
-                if (res.ok && user) {
+            authorize: async function (credentials, req) {
+
+                if(credentials?.username === '' || credentials?.password === '') {
+                    return null
+                }
+
+                const result = await getAuth(credentials)
+                const user = result.value
+
+                if (result.success && user) {
                     return user
                 }
                 return null
             }
-          })
+        })
     ],
 
 } 

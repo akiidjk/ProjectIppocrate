@@ -1,6 +1,6 @@
 "use client"
-import { signIn } from "next-auth/react"
 import Image from "next/image"
+import Link from "next/link";
 
 export default function Navbar(){
     return(
@@ -21,7 +21,7 @@ export default function Navbar(){
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#" >Home</a>
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#">School</a>
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#">Credits</a>
-                                {/* <a className="hover:text-[#4e69c3]  text-2xl" href="#" onClick={() => {signIn()}}>Admin</a>  */}
+                                <Link className="hover:text-[#4e69c3]  text-2xl" href="/admin/login">Admin</Link>
                             </div>
                     </div>
                 </div>
@@ -29,36 +29,3 @@ export default function Navbar(){
         </>
     )
 }
-
-
-
-/*
-<nav className="sticky top-0 z-10 bg-white backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-200">
-
- <nav className="z-auto flex justify-between items-center bg-[#F5F5F5]/[.55] backdrop-blur-lg fixed top-0 w-[100%] h-200"> 
-                <div>
-                    <Image 
-                        className="rounded-full ml-9 py-3"
-                        src="/gabibboo_navbar.jpg"
-                        width={50}
-                        height={50}
-                        alt="Picture of gabibbo"
-                    />
-                </div>
-                <div className="mr-8">
-                    <ul className="flex gap-8 items-end mr-10">
-                        <li>
-                            <a className="hover:text-gray-500 text-2xl" href="#" >Home</a>
-                        </li>
-                        <li>
-                            <a className="hover:text-gray-500 text-2xl" href="#">School</a>
-                        </li>
-                        <li>
-                            <a className="hover:text-gray-500 text-2xl" href="#">Credits</a> 
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-
-*/

@@ -19,16 +19,14 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-# Copia il resto dei file necessari per la build
-COPY . .
-
 # Costruisci l'applicazione
-RUN bun run build
+# RUN bun run build
 
 EXPOSE 3000
 
 # Avvia l'applicazione
-CMD ["bun", "run", "start","--","-H","0.0.0.0"]
+CMD ["bun", "run", "dev", "--", "-H", "0.0.0.0"]
+
 
 # ! PROD
 # # Fase di build
