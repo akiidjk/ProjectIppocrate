@@ -1,22 +1,25 @@
-'use client'
-
+"use client"
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function CreateAdminPage(){
-    const {data:session, status} = useSession();
+export default function CreateAdminPage() {
+    const { data: session, status } = useSession();
     const router = useRouter();
-    console.log(session)
-    
-    //TODO make the real validation 
-    if (!session){
-        console.log("MMM NO BRO YOU ARE NOT LOGGED LOL")
-        router.replace("/admin/login")
+
+    if (status === "unauthenticated") {
+        router.replace("/admin/login");
+        return null;
     }
+
+    if (status === "loading") {
+        return <div>Caricamento...</div>;
+    }
+
+    console.log("Token Bearear:", session?.user?.name);
 
     return (
         <div>
-            <p>Protected page</p>
+            <p>Pagina protetta</p>
         </div>
     );
 }
