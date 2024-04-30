@@ -82,12 +82,35 @@ pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<HTMLPage, Err
 }
 
 pub async fn generate_html(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
-    let page_data: HTMLPage = get_page(redis_pool, key).await?;
+    let mut page_data: HTMLPage = get_page(redis_pool, key).await?;
     
     let mut result: String = format!("<title>{}</title>\n", page_data.title);
 
-    for paragraph in page_data.paragraphs.iter() {
-        result.push_str(&format!("<p>{}</p>\n{}", paragraph.title, paragraph.content));
+    for paragraph in page_data.paragraphs.iter_mut() {
+        println!("layout type: {}", paragraph.layout_type);
+        let mut title_attributes: String = "lg:text-[54px] sm:text-[34px] font-bold mb-".to_string();
+        let mut image_classnames: String = String::new();
+        match paragraph.layout_type {
+            1 => {
+                title_attributes += "4";
+                image_classnames = "rounded-2xl".to_string();
+            }
+            2 => { 
+                title_attributes += "4";
+                image_classnames = "me-auto ms-auto rounded-full".to_string();
+            }
+            _ => { 
+                title_attributes += "10 text-center";
+            }
+        }
+        println!("INFO: images are not being outputted but logged instead: ");
+        
+        for s in paragraph.image_sources.iter_mut() {
+            *s = format!("<Image width={{1070}} height={{570}} className=\"{}\" src={{\"{}\"}} alt={{\"image\"}} />", image_classnames, s);
+            println!("{}", *s);
+        }
+        
+        result.push_str(&format!("<h1 className=\"{}\">{}</h1>\n<p>{}</p>", title_attributes, paragraph.title, paragraph.content));
     }
 
     Ok(result)

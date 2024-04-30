@@ -19,11 +19,13 @@ pub struct HTMLPage {
 pub struct Paragraph {
     pub title: String,
     pub content: String,
+    pub image_sources: Vec<String>,
+    pub layout_type: u16,
 }
 
 #[macro_export]
 macro_rules! paragraph {
-    ($title:expr, $content:expr) => {
-        Paragraph { title: $title.to_string(), content: $content.to_string() }
+    ($title:expr, $content:expr, $image_props:expr, $layout_type:expr) => {
+        Paragraph { title: $title.to_string(), content: $content.to_string(), image_sources: $image_props, layout_type: $layout_type }
     };
 }

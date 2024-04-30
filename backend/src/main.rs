@@ -28,8 +28,8 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
     // * Creation of test model
     let response_content = HTMLPage {
         title: "test page".to_string(),
-        paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo"), 
-                         paragraph!("paragrafo2", "godo forte")),
+        paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo", vec!("/test.png".to_string(), "/mimmo.png".to_string()), 2), 
+                         paragraph!("paragrafo2", "godo forte", vec!("/a.png".to_string(), "/dio.png".to_string()), 0)),
     };
 
     let rnd: u32 = thread_rng().gen_range(1..=10000);
