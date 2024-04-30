@@ -9,7 +9,7 @@ use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post};
 use actix_web::middleware::Logger;
 use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
-use env_logger::{Env};
+use env_logger::Env;
 use log::{error, info};
 use crate::model::{HTMLPage, Paragraph, TestModel, TokenClaims};
 use crate::data::URL_REDIS;
@@ -17,7 +17,7 @@ use crate::data::URL_REDIS;
 use actix_web_httpauth::{
     middleware::HttpAuthentication,
 };
-use serde::{Deserialize,Serialize};
+use serde::{Deserialize, Serialize};
 
 //Only for developing
 use rand::{Rng, thread_rng};
@@ -35,8 +35,8 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
     // * Creation of test model
     let response_content = HTMLPage {
         title: "test page".to_string(),
-        paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo"), 
-                         paragraph!("paragrafo2", "godo forte")),
+        paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo", vec!("/test.png".to_string(), "/mimmo.png".to_string()), 2), 
+                         paragraph!("paragrafo2", "godo forte", vec!("/a.png".to_string(), "dio.png".to_string()), 1)),
     };
 
     let rnd: u32 = thread_rng().gen_range(1..=10000);

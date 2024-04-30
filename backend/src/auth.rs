@@ -72,7 +72,6 @@ pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl 
                     if is_valid {
                         let claims = TokenClaims { id: user.id };
                         let token_str = claims.sign_with_key(&jwt_secret).unwrap();
-
                         HttpResponse::Ok().json(token_str)
                     } else {
                         HttpResponse::Unauthorized().json("Incorrect password")
