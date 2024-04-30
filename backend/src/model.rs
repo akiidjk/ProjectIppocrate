@@ -29,3 +29,15 @@ macro_rules! paragraph {
         Paragraph { title: $title.to_string(), content: $content.to_string(), image_sources: $image_props, layout_type: $layout_type }
     };
 }
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct TokenClaims{
+    pub(crate) id: String
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Admin {
+    pub id: String,
+    pub username: String,
+    pub password: String,
+}
