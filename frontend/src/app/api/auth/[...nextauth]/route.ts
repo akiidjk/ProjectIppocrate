@@ -4,13 +4,9 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import {getAuth} from "@/app/api/api";
 // import bcrypt from "bcrypt";
 
-
 export const authOptions: AuthOptions = {
     session : {
       strategy: "jwt"
-    },
-    adapter: {
-
     },
     jwt: {
         maxAge: 60 * 60,
@@ -28,23 +24,22 @@ export const authOptions: AuthOptions = {
     debug: true,
     providers : [
         CredentialsProvider({
-            id: "",
-            type: "credentials",
             name: 'credentials',
             credentials: {
-              username: { label: "Username", type: "text", placeholder: "jsmith" },
+              username: { label: "Username", type: "text" },
               password: { label: "Password", type: "password" }
             },
-            authorize: async function (credentials, req) {
-
+            async authorize (credentials) {
+                
                 if(credentials?.username === '' || credentials?.password === '') {
                     return null
                 }
 
-                const result = await getAuth(credentials)
-                const user = result.value
+                const res = await getAuth(credentials)
 
-                if (result.success && user) {
+                const user = res.value
+
+                if (res.success && user) {
                     return user
                 }
                 return null

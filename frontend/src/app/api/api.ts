@@ -13,7 +13,7 @@ export async function getAuth(credentials:Record<"username" | "password", string
 
     return {
         value: {
-            token: res.json(),
+            token: await res.json(),
         },
         success: res.ok
     }

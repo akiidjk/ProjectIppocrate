@@ -5,25 +5,20 @@ import { Label } from "../../components/AcernityUI/label";
 import { Input } from "../../components/AcernityUI/input";
 import { cn } from "@/utils/cn";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 export default function LoginAdminPage(){
 
     const router = useRouter();
-    const [data,setData] = useState({
-        username: "",
-        password: ""
-    });
-    //TODO implement the communication with BE
+
     const login = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
   
       const formData = new FormData(event.currentTarget);
 
-      const username = formData.get("username")?.toString() ?? 'null';
-      const password = formData.get("password")?.toString() ?? 'null';
+      const username = formData.get("username")?.toString() ?? '';
+      const password = formData.get("password")?.toString() ?? '';
 
         try {
             // Assuming signIn is an asynchronous function
@@ -32,7 +27,7 @@ export default function LoginAdminPage(){
                 password,
                 redirect: false,
             });
-
+        
           router.push("/admin/create_page");
       } catch (error) {
           console.error("Errore durante il login:", error);

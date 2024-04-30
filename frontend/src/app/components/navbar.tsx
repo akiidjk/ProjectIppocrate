@@ -21,7 +21,7 @@ export default function Navbar(){
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#" >Home</a>
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#">School</a>
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#">Credits</a>
-                                <Link className="hover:text-[#4e69c3]  text-2xl" href="/admin/login">Admin</Link>
+                                <Link className="hover:text-[#4e69c3]  text-2xl" href="admin/login">Admin</Link>
                             </div>
                     </div>
                 </div>
