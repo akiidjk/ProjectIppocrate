@@ -78,16 +78,16 @@ pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<HTMLPage, Err
     let formatted_key = format!("deadpool/{}", key);
     let value_str: String = get_redis_value!(conn, formatted_key);
 
-    let model: HTMLPage = serde_json::from_str(&value_str)
+    let mut result: HTMLPage = serde_json::from_str(&value_str)
         .map_err(ErrorManager::SerdeError)?;
 
-    Ok(model)
+    generate_html(&mut result);
+
+    Ok(result)
 }
 
-pub async fn generate_html(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
-    let mut page_data: HTMLPage = get_page(redis_pool, key).await?;
-    
-    let mut result: String = format!("<title>{}</title>\n", page_data.title);
+fn generate_html(page_data: &mut HTMLPage) -> () {
+    page_data.title = format!("<title>{}</title>", page_data.title);
 
     for paragraph in page_data.paragraphs.iter_mut() {
         println!("layout type: {}", paragraph.layout_type);
@@ -106,17 +106,16 @@ pub async fn generate_html(redis_pool: Data<Pool>, key: &str) -> Result<String, 
                 title_attributes += "10 text-center";
             }
         }
-        println!("INFO: images are not being outputted but logged instead: ");
+        println!("INFO: images: ");
         
         for s in paragraph.image_sources.iter_mut() {
             *s = format!("<Image width={{1070}} height={{570}} className=\"{}\" src={{\"{}\"}} alt={{\"image\"}} />", image_classnames, s);
             println!("{}", *s);
         }
         
-        result.push_str(&format!("<h1 className=\"{}\">{}</h1>\n<p>{}</p>", title_attributes, paragraph.title, paragraph.content));
+        paragraph.title = format!("<h1 className=\"{}\">{}</h1>", title_attributes, paragraph.title); 
+        paragraph.content = format!("<p>{}</p>", paragraph.content);
     }
-
-    Ok(result)
 }
 
 pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorManager> {
