@@ -11,7 +11,7 @@ use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
 use env_logger::Env;
 use log::{error, info};
-use crate::model::{HTMLPage, Paragraph, TestModel, TokenClaims};
+use crate::model::{HTMLPage, Paragraph, TokenClaims};
 use crate::data::URL_REDIS;
 
 use actix_web_httpauth::{
@@ -49,30 +49,39 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
     let password = redis::get_admin(redis_pool.clone()).await?;
     println!("{:?}", password);
 
-    let response_page: String = redis::generate_html(redis_pool.clone(), &key).await?;
+    let response_page = redis::get_page(redis_pool.clone(), &key).await?;
 
-    Ok(HttpResponse::Ok().body(response_page))
+    Ok(HttpResponse::Ok().json(response_page))
 }
 
 
-#[get("/get_page")]
-async fn get_page(redis_pool: Data<Pool>) -> impl Responder {
-    info!("Handling request for /hello endpoint");
-    HttpResponse::Ok().body("Server online!")
+#[get("/api/get_page/{name}")]
+async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
+    let name = route.into_inner();
+    info!("INFO: Handling /get_page, \"{}\" was requested", name);
+    
+    let key = format!("deadpool/{}", name);
+    
+    let result = redis::get_page(redis_pool, &key).await?;
+    
+    Ok(HttpResponse::Ok().json(result))
 }
 
 #[post("/admin/create_page")]
-async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>,body: Json<HTMLPage>) -> impl Responder {
-
+async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<HTMLPage>) -> impl Responder {
     match req_user {
-        Some(user) => {
+        Some(_user) => {
             let page: HTMLPage = body.into_inner();
             // Query to add the page
-            println!("{:?}",page);
-            HttpResponse::Ok().json("Page created")
+            info!("{:?}",page);
+            if redis::create_page(redis_pool, &page.title.clone(), page).await.unwrap() {
+                HttpResponse::Ok().json("Page created")
+            } else {
+                HttpResponse::InternalServerError().json("Page creation failed")
+            }
         }
-        _ => HttpResponse::Unauthorized().json("Unable to verify identity")
 
+        _ => HttpResponse::Unauthorized().body("<h1>Access Denied</h1>")
     }
 }
 
@@ -114,6 +123,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(pool_data_clone.clone())
             .service(hello)
             .service(test)
+            .service(get_page)
             .service(basic_auth)
             .wrap(Logger::default())
             .service( 
