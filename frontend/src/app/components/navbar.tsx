@@ -18,10 +18,10 @@ export default function Navbar(){
                             />
                         </span>
                             <div className="flex space-x-4 text-gray-900">
-                                <a className="hover:text-[#4e69c3]  text-2xl" href="#" >Home</a>
-                                <a className="hover:text-[#4e69c3]  text-2xl" href="#">School</a>
+                                <a className="hover:text-[#4e69c3]  text-2xl" href="/" >Home</a>
+                                <a className="hover:text-[#4e69c3]  text-2xl" target="_blank" href="https://www.iismargheritahackbaronissi.edu.it/">School</a>
                                 <a className="hover:text-[#4e69c3]  text-2xl" href="#">Credits</a>
-                                <Link className="hover:text-[#4e69c3]  text-2xl" href="admin/login">Admin</Link>
+                                <Link className="hover:text-[#4e69c3] text-2xl" href="/admin/dashboard">Admin</Link>
                             </div>
                     </div>
                 </div>
