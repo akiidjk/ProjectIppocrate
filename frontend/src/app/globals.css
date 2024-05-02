@@ -13,7 +13,7 @@
       --popover: 0 0% 100%;
       --popover-foreground: 0 0% 3.9%;
 
-      --primary: 0 0% 9%;
+      --primary: 226.15 49.37%  53.53%; /*#4e69c3*/
       --primary-foreground: 0 0% 98%;
 
       --secondary: 0 0% 96.1%;
@@ -65,6 +65,31 @@
       --ring: 0 0% 83.1%;
     }
   }
+
+/* START CSS card dashboard */
+.card_dashboard {
+  width: 190px;
+  height: 254px;
+  border-radius: 30px;
+  background: #e0e0e0;
+  box-shadow: 15px 15px 30px #bebebe,
+  -15px -15px 30px #ffffff;
+}
+
+
+.parent_dashboard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.div1_dashboard { grid-area: 3 / 2 / 4 / 3; }
+.div2_dashboard { grid-area: 3 / 4 / 4 / 5; }
+
+
+/* END CSS card dashboard */
 
 /* START CSS LOADER loader.tsx */
 
