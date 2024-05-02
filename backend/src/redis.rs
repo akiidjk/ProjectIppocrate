@@ -43,9 +43,7 @@ macro_rules! remove_redis_value {
 pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await?;
 
-    let formatted_key = format!("deadpool/{}", key);
-
-    set_redis_value!(conn, formatted_key, value.to_string());
+    set_redis_value!(conn, key, value.to_string());
 
     Ok(true)
 }
@@ -53,10 +51,9 @@ pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Re
 pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await?;
 
-    let formatted_key = format!("deadpool/{}", key);
     let value_str = serde_json::to_string(&value)?;
 
-    set_redis_value!(conn, formatted_key, value_str);
+    set_redis_value!(conn, key.to_string(), value_str);
 
     Ok(true)
 }
@@ -66,8 +63,7 @@ pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Resul
 pub async fn get_string(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
-    let formatted_key = format!("deadpool/{}", key);
-    let value: String = get_redis_value!(conn, formatted_key);
+    let value: String = get_redis_value!(conn, key);
     Ok(value)
 }
 
@@ -75,8 +71,7 @@ pub async fn get_string(redis_pool: Data<Pool>, key: &str) -> Result<String, Err
 pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<Page, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
-    let formatted_key = format!("deadpool/{}", key);
-    let value_str: String = get_redis_value!(conn, formatted_key);
+    let value_str: String = get_redis_value!(conn, key);
 
     let mut result: Page = serde_json::from_str(&value_str)
         .map_err(ErrorManager::SerdeError)?;
@@ -121,11 +116,7 @@ fn generate_html(page_data: &mut Page) -> () {
 
 pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
-
-    let formatted_key = format!("deadpool/{}", key);
-
-    remove_redis_value!(conn, formatted_key);
-
+    remove_redis_value!(conn, key);
     Ok(true)
 }
 
