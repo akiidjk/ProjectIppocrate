@@ -10,8 +10,8 @@ use actix_web::middleware::Logger;
 use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
 use env_logger::Env;
-use log::{error, info};
-use crate::model::{HTMLPage, Paragraph, TokenClaims};
+use log::{debug, error, info};
+use crate::model::{HTMLPage, Page, Paragraph, TokenClaims};
 use crate::data::URL_REDIS;
 
 use actix_web_httpauth::{
@@ -32,11 +32,15 @@ async fn hello() -> impl Responder {
 #[get("/test")] //Simple test endpoint
 async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
 
+
     // * Creation of test model
-    let response_content = HTMLPage {
-        title: "test page".to_string(),
-        paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo", vec!("/test.png".to_string(), "/mimmo.png".to_string()), 2), 
-                         paragraph!("paragrafo2", "godo forte", vec!("/a.png".to_string(), "dio.png".to_string()), 1)),
+    let response_content = Page {
+        id: "".to_string(),
+        page: HTMLPage {
+            title: "test page".to_string(),
+            paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo", vec!("/test.png".to_string(), "/mimmo.png".to_string()), 2),
+                             paragraph!("paragrafo2", "godo forte", vec!("/a.png".to_string(), "dio.png".to_string()), 1)),
+        },
     };
 
     let rnd: u32 = thread_rng().gen_range(1..=10000);
@@ -59,22 +63,18 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
 async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
     info!("INFO: Handling /get_page, \"{}\" was requested", name);
-    
-    let key = format!("deadpool/{}", name);
-    
-    let result = redis::get_page(redis_pool, &key).await?;
-    
+    let result = redis::get_page(redis_pool, &name).await?;
     Ok(HttpResponse::Ok().json(result))
 }
 
 #[post("/admin/create_page")]
-async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<HTMLPage>) -> impl Responder {
+async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<Page>) -> impl Responder {
     match req_user {
         Some(_user) => {
-            let page: HTMLPage = body.into_inner();
+            let page: Page = body.into_inner();
             // Query to add the page
             info!("{:?}",page);
-            if redis::create_page(redis_pool, &page.title.clone(), page).await.unwrap() {
+            if redis::create_page(redis_pool, &page.id.clone(), page).await.unwrap() {
                 HttpResponse::Ok().json("Page created")
             } else {
                 HttpResponse::InternalServerError().json("Page creation failed")

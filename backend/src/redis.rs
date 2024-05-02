@@ -5,7 +5,7 @@ use deadpool_redis::Pool;
 use deadpool_redis::redis::cmd;
 use crate::auth::create_user;
 use crate::error_manager::ErrorManager;
-use crate::model::{Admin, HTMLPage};
+use crate::model::{Admin, HTMLPage, Page};
 use uuid::Uuid;
 use crate::data::PASSWORD_ADMIN;
 // * --------------------------- MACRO ----------------------------
@@ -50,7 +50,7 @@ pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Re
     Ok(true)
 }
 
-pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: HTMLPage) -> Result<bool, ErrorManager> {
+pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await?;
 
     let formatted_key = format!("deadpool/{}", key);
@@ -72,13 +72,13 @@ pub async fn get_string(redis_pool: Data<Pool>, key: &str) -> Result<String, Err
 }
 
 
-pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<HTMLPage, ErrorManager> {
+pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<Page, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
     let formatted_key = format!("deadpool/{}", key);
     let value_str: String = get_redis_value!(conn, formatted_key);
 
-    let mut result: HTMLPage = serde_json::from_str(&value_str)
+    let mut result: Page = serde_json::from_str(&value_str)
         .map_err(ErrorManager::SerdeError)?;
 
     generate_html(&mut result);
@@ -86,10 +86,11 @@ pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<HTMLPage, Err
     Ok(result)
 }
 
-fn generate_html(page_data: &mut HTMLPage) -> () {
-    page_data.title = format!("<title>{}</title>", page_data.title);
+fn generate_html(page_data: &mut Page) -> () {
 
-    for paragraph in page_data.paragraphs.iter_mut() {
+    page_data.page.title = format!("<title>{}</title>", page_data.page.title);
+
+    for paragraph in page_data.page.paragraphs.iter_mut() {
         println!("layout type: {}", paragraph.layout_type);
         let mut title_attributes: String = "lg:text-[54px] sm:text-[34px] font-bold mb-".to_string();
         let mut image_classnames: String = String::new();

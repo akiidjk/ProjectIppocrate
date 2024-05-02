@@ -41,3 +41,10 @@ pub struct Admin {
     pub username: String,
     pub password: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Page{
+    pub id: String,
+    pub page: HTMLPage
+}
+
