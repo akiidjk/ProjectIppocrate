@@ -1,9 +1,9 @@
-
-import { Montserrat } from "next/font/google";
-import Provider from "@/context/Providers";
+import {Montserrat} from "next/font/google";
+import ProviderSession from "@/context/session_provider";
 import "./globals.css";
 import {Toaster} from "@/components/ui/toaster";
-import { getSession, useSession } from "next-auth/react";
+import {getSession} from "next-auth/react";
+import {PagesProvider} from "@/context/page_provider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -21,21 +21,22 @@ export default function RootLayout({
 }>) {
 
   async function getClientSideSession() {
-    const session = await getSession()
-    return session
+      return await getSession()
   }
   
   let session = getClientSideSession()
 
   return (
-    <Provider session={session}>
-      <html lang="en">
-          <body className={montserrat.className}>
-              {children}
-              <Toaster />
-          </body>
-      </html>
-    </Provider>
+    <ProviderSession session={session}>
+        <PagesProvider>
+          <html lang="en">
+              <body className={montserrat.className}>
+                  {children}
+                  <Toaster />
+              </body>
+          </html>
+        </PagesProvider>
+    </ProviderSession>
   );
 }
   
