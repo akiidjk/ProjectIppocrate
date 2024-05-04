@@ -14,7 +14,7 @@ use crate::data::PASSWORD_ADMIN;
 macro_rules! set_redis_value {
     ($conn:expr, $key:expr, $value:expr) => {
         cmd("SET")
-            .arg(&[$key, $value.to_string()])
+            .arg(&[$key, $value])
             .query_async::<_, ()>(&mut $conn)
             .await?
     };
@@ -43,7 +43,7 @@ macro_rules! remove_redis_value {
 pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await?;
 
-    set_redis_value!(conn, key, value.to_string());
+    set_redis_value!(conn, key, value);
 
     Ok(true)
 }
