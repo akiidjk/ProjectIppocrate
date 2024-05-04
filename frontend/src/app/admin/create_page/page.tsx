@@ -1,6 +1,6 @@
 "use client"
 
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {useEffect, useRef, useState} from "react";
 
@@ -17,6 +17,7 @@ import {Button} from "@/components/ui/button";
 import Expand from "@/app/admin/create_page/components/svg/expand";
 
 import {ImperativePanelHandle} from "react-resizable-panels";
+import {usePages} from "@/context/page_provider";
 
 
 
@@ -25,6 +26,8 @@ export default function CreateAdminPage() {
     const [isFull, setIsFull] = useState(false);
     const [loading, setLoading] = useState(true);
     const resizeNull = useRef<ImperativePanelHandle>(null);
+
+
 
     async function getClientSideSession() {
         const session = await getSession()
@@ -35,23 +38,21 @@ export default function CreateAdminPage() {
         resizeNull.current?.resize(0)
     }, [isFull]);
 
-    useEffect(() => {
-        getClientSideSession().then(session => {
-            console.log(session)
-            if (!session) {
-              router.replace("/admin/login")
-              return null
-            }else{
-                setLoading(false);
-            }
-          })
-      }, []);
-    
-      if (loading) {
-        return <Loader />;
-      }
-
-
+    // useEffect(() => {
+    //     getClientSideSession().then(session => {
+    //         console.log(session)
+    //         if (!session) {
+    //           router.replace("/admin/login")
+    //           return null
+    //         }else{
+    //             setLoading(false);
+    //         }
+    //       })
+    //   }, []);
+    //
+    //   if (loading) {
+    //     return <Loader />;
+    //   }
 
 
     return (
