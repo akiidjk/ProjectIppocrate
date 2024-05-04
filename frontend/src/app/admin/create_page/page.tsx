@@ -38,21 +38,21 @@ export default function CreateAdminPage() {
         resizeNull.current?.resize(0)
     }, [isFull]);
 
-    // useEffect(() => {
-    //     getClientSideSession().then(session => {
-    //         console.log(session)
-    //         if (!session) {
-    //           router.replace("/admin/login")
-    //           return null
-    //         }else{
-    //             setLoading(false);
-    //         }
-    //       })
-    //   }, []);
-    //
-    //   if (loading) {
-    //     return <Loader />;
-    //   }
+    useEffect(() => {
+        getClientSideSession().then(session => {
+            console.log(session)
+            if (!session) {
+              router.replace("/admin/login")
+              return null
+            }else{
+                setLoading(false);
+            }
+          })
+      }, []);
+
+      if (loading) {
+        return <Loader />;
+      }
 
 
     return (
