@@ -10,7 +10,7 @@ interface ProviderProps {
 
 const Provider: React.FC<ProviderProps> = ({ children, session }) => {
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       {children}
     </SessionProvider>
   );

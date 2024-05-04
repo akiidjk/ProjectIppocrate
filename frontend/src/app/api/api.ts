@@ -1,5 +1,6 @@
 
-const BASE_ENDPOINT = "http://localhost:8000";
+// const BASE_ENDPOINT = "http://localhost:8000";
+const BASE_ENDPOINT = "http://backend:8000";
 
 export async function getAuth(credentials:Record<"username" | "password", string> | undefined){
     let headers = {
@@ -13,6 +14,9 @@ export async function getAuth(credentials:Record<"username" | "password", string
 
     return {
         value: {
+            name: "",
+            password: "",
+            id:"",
             token: await res.json(),
         },
         success: res.ok

@@ -1,5 +1,6 @@
 "use client"
-import { useSession } from "next-auth/react";
+
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {useEffect, useRef, useState} from "react";
 
@@ -19,29 +20,39 @@ import {ImperativePanelHandle} from "react-resizable-panels";
 
 
 
-
 export default function CreateAdminPage() {
-    const { data: session, status } = useSession();
     const router = useRouter();
     const [isFull, setIsFull] = useState(false);
-
+    const [loading, setLoading] = useState(true);
     const resizeNull = useRef<ImperativePanelHandle>(null);
+
+    async function getClientSideSession() {
+        const session = await getSession()
+        return session?.user
+      }
 
     useEffect(() => {
         resizeNull.current?.resize(0)
     }, [isFull]);
 
+    useEffect(() => {
+        getClientSideSession().then(session => {
+            console.log(session)
+            if (!session) {
+              router.replace("/admin/login")
+              return null
+            }else{
+                setLoading(false);
+            }
+          })
+      }, []);
+    
+      if (loading) {
+        return <Loader />;
+      }
 
-    if (status === "unauthenticated") {
-        router.replace("/admin/login");
-        return null;
-    }
 
-    if (status === "loading") {
-        return <Loader/>;
-    }
 
-    console.log("Token Bearear:", session?.user?.name);
 
     return (
         <div>

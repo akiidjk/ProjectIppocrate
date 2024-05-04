@@ -86,7 +86,7 @@ export default  function Form(){
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Sei assolutamente sicuro?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Questa azione non può essere annullata. L'operazione eliminerà definitivamente il vostro
+                                    Questa azione non può essere annullata. L&apos operazione eliminerà definitivamente il vostro
                                     progresso di creazione.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>

@@ -9,26 +9,37 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import Navbar from "@/app/components/navbar";
-import {useSession} from "next-auth/react";
+import {getSession, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import Loader from "@/app/components/loader";
+import { useEffect, useState } from "react";
 
 
 export default function Dashboard(){
-    const { data: session, status } = useSession();
     const router = useRouter();
+    const [loading, setLoading] = useState(true);
 
-    if (status === "unauthenticated") {
-        router.replace("/admin/login");
-        return null;
-    }
+    async function getClientSideSession() {
+        const session = await getSession()
+        return session?.user
+      }
 
-    if (status === "loading") {
-        return <Loader/>;
-    }
-
-    console.log("Token Bearear:", session?.user?.name);
-
+    useEffect(() => {
+        getClientSideSession().then(session => {
+            console.log(session)
+            if (!session) {
+              router.replace("/admin/login")
+              return null
+            }else{
+                setLoading(false);
+            }
+          })
+      }, []);
+    
+      if (loading) {
+        return <Loader />;
+      }
+      
     return (
         <div>
             <Navbar/>
