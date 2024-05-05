@@ -1,6 +1,7 @@
+import {Page} from "@/context/page_provider";
 
-// const BASE_ENDPOINT = "http://localhost:8000";
-const BASE_ENDPOINT = "http://backend:8000";
+const BASE_ENDPOINT = "http://localhost:8000";
+// const BASE_ENDPOINT = "http://backend:8000";
 
 export async function getAuth(credentials:Record<"username" | "password", string> | undefined){
     let headers = {
@@ -21,4 +22,66 @@ export async function getAuth(credentials:Record<"username" | "password", string
         },
         success: res.ok
     }
+}
+
+export async function create_page(token:string,page:Page){
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    console.log(myHeaders.get("Authorization"));
+
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(page),
+        redirect: "follow"
+    };
+
+    console.log(requestOptions);
+
+    fetch("http://localhost:8000/admin/create_page",
+        requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+
+}
+
+
+export async function get_page(id_pages:string){
+
+    const requestOptions:RequestInit = {
+        method: "GET",
+        redirect: "follow"
+    };
+
+    fetch(`http://localhost:8000/api/get_page/${id_pages}`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+
+}
+
+
+export async function get_keys(token:string){
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    console.log(myHeaders.get("Authorization"));
+
+    const requestOptions: RequestInit = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+    };
+
+    fetch(`http://localhost:8000/admin/get_keys`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+
 }
