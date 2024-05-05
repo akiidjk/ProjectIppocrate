@@ -1,6 +1,6 @@
 "use client"
-import {createContext, useContext, useState} from "react";
-import {create_page} from "@/app/api/api";
+import {createContext, useContext, useEffect, useState} from "react";
+import {create_page, get_pages, remove_page} from "@/app/api/api";
 
 
 export type Paragraph = {
@@ -18,6 +18,7 @@ type HtmlPage = {
 export type Page = {
     id: string
     page: HtmlPage
+    time:string
 };
 
 
@@ -27,6 +28,7 @@ type PagesContextType = {
     addParagraph: (newParagraph: Paragraph, idPage: string) => void;
     removeParagraph: (index: number, idPage: string) => void;
     addParagraphs: (newParagraphs: Paragraph[], idPage: string) => void;
+    remove_page_by_index: (token:string,index: number) => void;
 };
 
 const defaultPagesContext: PagesContextType = {
@@ -35,12 +37,21 @@ const defaultPagesContext: PagesContextType = {
     addParagraph: () => {},
     removeParagraph: () => {},
     addParagraphs: () => {},
+    remove_page_by_index: ()=> {},
 };
 
 const PagesContext = createContext<PagesContextType>(defaultPagesContext);
 
+
 export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
+
     const [pages, setPages] = useState<Page[]>([]);
+
+    useEffect(() => {
+        get_pages().then(fetchedPages => {
+            setPages(fetchedPages);  // Assumi che `fetchedPages` sia già nel formato corretto
+        }).catch(error => console.error("Error fetching pages:", error));
+    }, []);
 
     const addPage = (newPage: Page,token:string) => {
         setPages(prevPages => [...prevPages, newPage]); //Locally
@@ -48,6 +59,16 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
         create_page(token, newPage).then(r => { //DB
             console.log("RICHIESTA INVIATA")
         })
+    };
+
+    const remove_page_by_index = (token:string,index: number) => {
+        let name_page = pages[index].id
+        console.log(name_page)
+        setPages(prevPages => [
+            ...prevPages.slice(0, index),
+            ...prevPages.slice(index + 1)
+        ]);
+        remove_page(token,name_page)
     };
 
     const addParagraph = (newParagraph: Paragraph, idPage: string) => {
@@ -75,7 +96,7 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <PagesContext.Provider value={{ pages, addPage, addParagraph, removeParagraph, addParagraphs }}>
+        <PagesContext.Provider value={{ pages, addPage,remove_page_by_index, addParagraph, removeParagraph, addParagraphs }}>
             {children}
         </PagesContext.Provider>
     );
