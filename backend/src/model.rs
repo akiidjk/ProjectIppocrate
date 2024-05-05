@@ -45,6 +45,7 @@ pub struct Admin {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Page{
     pub id: String,
-    pub page: HTMLPage
+    pub page: HTMLPage,
+    pub time:String
 }
 
