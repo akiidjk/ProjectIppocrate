@@ -9,8 +9,12 @@ import {Button} from "@/components/ui/button";
 import {useToast} from "@/components/ui/use-toast";
 
 
-export default function ConfirmButtons() {
-    const { toast } = useToast()
+interface ConfirmButtonsProps {
+    save?: () => void
+}
+
+export default function ConfirmButtons({save}: ConfirmButtonsProps) {
+    const {toast} = useToast()
 
 
     return (
@@ -52,7 +56,8 @@ export default function ConfirmButtons() {
                         <AlertDialogFooter>
                             <AlertDialogCancel>No meglio di no</AlertDialogCancel>
                             <AlertDialogAction onClick={() => {
-                                {/*Implement the logic*/
+                                if (save) {
+                                    save()
                                 }
                                 toast({
                                     className: "bg-[#3aba6f] text-[#fdfdfd]",
