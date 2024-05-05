@@ -42,6 +42,7 @@ async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> 
             paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo", vec!("/test.png".to_string(), "/mimmo.png".to_string()), 2),
                              paragraph!("paragrafo2", "godo forte", vec!("/a.png".to_string(), "dio.png".to_string()), 1)),
         },
+        time:"adad".to_string()
     };
 
     let rnd: u32 = thread_rng().gen_range(1..=10000);
@@ -65,6 +66,20 @@ async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<Ht
     let name = route.into_inner();
     info!("INFO: Handling /get_page, \"{}\" was requested", name);
     let result = redis::get_page(redis_pool, &name).await?;
+    Ok(HttpResponse::Ok().json(result))
+}
+
+#[post("/admin/remove_page/{name}")]
+async fn remove_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
+    let name = route.into_inner();
+    info!("INFO: Handling /get_page, \"{}\" was requested", name);
+    redis::remove_page(redis_pool, &name).await?;
+    Ok(HttpResponse::Ok().json({}))
+}
+
+#[get("/api/get_pages")]
+async fn get_pages(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
+    let result = redis::get_pages(redis_pool).await?;
     Ok(HttpResponse::Ok().json(result))
 }
 
@@ -138,6 +153,7 @@ async fn main() -> std::io::Result<()> {
             .service(test)
             .service(get_page)
             .service(get_keys)
+            .service(get_pages)
             .service(basic_auth)
             .wrap(Logger::default())
             .wrap(cors)
@@ -145,6 +161,7 @@ async fn main() -> std::io::Result<()> {
                 web::scope("")
                     .wrap(bearer_middleware)
                     .service(create_page)
+                    .service(remove_page)
             )
     })
         .bind(("0.0.0.0", 8000))?

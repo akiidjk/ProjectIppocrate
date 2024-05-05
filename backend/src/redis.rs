@@ -105,11 +105,11 @@ fn generate_html(page_data: &mut Page) -> () {
         println!("INFO: images: ");
         
         for s in paragraph.image_sources.iter_mut() {
-            *s = format!("<Image width={{1070}} height={{570}} className=\"{}\" src={{\"{}\"}} alt={{\"image\"}} />", image_classnames, s);
+            *s = format!("<Image width={{1070}} height={{570}} class=\"{}\" src={{\"{}\"}} alt={{\"image\"}} />", image_classnames, s);
             println!("{}", *s);
         }
         
-        paragraph.title = format!("<h1 className=\"{}\">{}</h1>", title_attributes, paragraph.title); 
+        paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
         paragraph.content = format!("<p>{}</p>", paragraph.content);
     }
 }
@@ -166,4 +166,22 @@ pub async fn get_keys(redis_pool: Data<Pool>) -> Result<Vec<String>, ErrorManage
 
     keys.retain(|x| x != "auth/admin");
     Ok(keys)
+}
+
+pub async fn get_pages(redis_pool: Data<Pool>) -> Result<Vec<Page>, ErrorManager> {
+
+    let keys: Vec<String> = get_keys(redis_pool.clone()).await?;
+    let mut pages:Vec<Page> = vec![];
+
+    for key in keys{
+        pages.push(get_page(redis_pool.clone(),key.as_str()).await?)
+    }
+    Ok(pages)
+}
+
+
+pub async fn remove_page(redis_pool: Data<Pool>,key: &str) -> Result<(), ErrorManager> {
+    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
+    remove_redis_value!(conn,key);
+    Ok(())
 }
