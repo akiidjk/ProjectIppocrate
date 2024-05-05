@@ -8,33 +8,46 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {Button} from "@/components/ui/button";
-import Plus from "@/app/admin/create_page/components/svg/plus";
+
 import { Separator } from "@/components/ui/separator"
 
 import ConfirmButtons from "@/app/admin/create_page/components/confirm_buttons";
 import CreateParagraphDialog from "@/app/admin/create_page/components/create_paragraph_dialog";
 import {usePages,Page, Paragraph} from "@/context/page_provider";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {getSession, useSession} from "next-auth/react";
+import {get_keys, get_page} from "@/app/api/api";
 
 export default  function Form(){
     const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
+    const [token,setToken] = useState("");
+
+    useEffect(() => {
+        async function fetchSession() {
+            const session = await getSession();
+            setToken(session?.user?.name ?? 'session not found');
+        }
+        fetchSession();
+    }, []);
 
     const [localPage, setLocalPage] = useState({
         id: '',
-        HTMLPage: {
+        page: {
             title: '',
             paragraphs: []
         }
     });
 
+    get_page("aaaaaaaaa")
+    get_keys(token)
+
     const handleChange = (newParagraph: Paragraph) => {
         // @ts-ignore
         setLocalPage(prevLocalPage => ({
             ...prevLocalPage,
-            HTMLPage: {
-                ...prevLocalPage.HTMLPage,
-                paragraphs: [...prevLocalPage.HTMLPage.paragraphs, newParagraph]
+            page: {
+                ...prevLocalPage.page,
+                paragraphs: [...prevLocalPage.page.paragraphs, newParagraph]
             }
         }));
     };
@@ -44,6 +57,10 @@ export default  function Form(){
             ...localPage,
             id: event.target.value
         });
+    };
+
+    const savePage = () => {
+        addPage(localPage, token);
     };
 
     return (
@@ -112,7 +129,7 @@ export default  function Form(){
                     </TooltipProvider>
                 </div>
                 <ul>
-                    {localPage.HTMLPage.paragraphs.map((paragraph:Paragraph, index) => (
+                    {localPage.page.paragraphs.map((paragraph:Paragraph, index) => (
                         <li key={index}>{paragraph.title}</li>
                     ))}
                 </ul>
@@ -126,7 +143,7 @@ export default  function Form(){
 
             {/* Button  */}
 
-            <ConfirmButtons/>
+            <ConfirmButtons save={savePage}/>
 
         </div>
     )
