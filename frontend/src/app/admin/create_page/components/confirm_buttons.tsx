@@ -10,7 +10,7 @@ import {useToast} from "@/components/ui/use-toast";
 
 
 interface ConfirmButtonsProps {
-    save?: () => void
+    save?: Function
 }
 
 export default function ConfirmButtons({save}: ConfirmButtonsProps) {

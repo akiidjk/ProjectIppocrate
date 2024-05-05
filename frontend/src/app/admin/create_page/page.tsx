@@ -17,7 +17,7 @@ import {Button} from "@/components/ui/button";
 import Expand from "@/app/admin/create_page/components/svg/expand";
 
 import {ImperativePanelHandle} from "react-resizable-panels";
-import {usePages} from "@/context/page_provider";
+import {Paragraph, usePages} from "@/context/page_provider";
 
 
 
@@ -26,8 +26,60 @@ export default function CreateAdminPage() {
     const [isFull, setIsFull] = useState(false);
     const [loading, setLoading] = useState(true);
     const resizeNull = useRef<ImperativePanelHandle>(null);
+    const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
+    const [token,setToken] = useState("");
+
 
     // TODO move the localPage structure in the page and manage all with handle
+
+    useEffect(() => {
+        async function fetchSession() {
+            const session = await getSession();
+            setToken(session?.user?.name ?? 'session not found');
+        }
+        fetchSession();
+    }, []);
+
+    const [localPage, setLocalPage] = useState({
+        id: '',
+        page: {
+            title: '',
+            paragraphs: []
+        },
+        time: new Date().toDateString()
+    });
+
+    const handleParagraph = (newParagraph: Paragraph) => {
+        // @ts-ignore
+        setLocalPage(prevLocalPage => ({
+            ...prevLocalPage,
+            page: {
+                ...prevLocalPage.page,
+                paragraphs: [...prevLocalPage.page.paragraphs, newParagraph]
+            }
+        }));
+    };
+
+    const savePage = () => {
+        //Todo Make full check on the content with the function
+        addPage(localPage, token);
+    };
+
+
+    const deleteParagraph = (index:number) => {
+        setLocalPage(prevLocalPage => {
+            const newParagraphs = [...prevLocalPage.page.paragraphs];
+            newParagraphs.splice(index, 1);
+            return {
+                ...prevLocalPage,
+                page: {
+                    ...prevLocalPage.page,
+                    paragraphs: newParagraphs
+                }
+            };
+        });
+    };
+
 
 
     async function getClientSideSession() {
@@ -72,7 +124,7 @@ export default function CreateAdminPage() {
                                     </h1>
                                 </div>
                                 <div>
-                                    <Form/>
+                                    <Form deleteParagraph={deleteParagraph} handleParagraph={handleParagraph} localPage={localPage} savePage={savePage}/>
                                 </div>
                             </ResizablePanel>
                     }

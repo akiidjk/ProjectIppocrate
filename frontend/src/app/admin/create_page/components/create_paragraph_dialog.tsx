@@ -29,7 +29,7 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 
 interface CreateParagraphDialogProps {
-    handle: (NewParagraph: any) => void
+    handle: Function
 }
 
 export default function CreateParagraphDialog({handle}: CreateParagraphDialogProps) {

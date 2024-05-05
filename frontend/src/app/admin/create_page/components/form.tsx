@@ -14,64 +14,24 @@ import { Separator } from "@/components/ui/separator"
 import ConfirmButtons from "@/app/admin/create_page/components/confirm_buttons";
 import CreateParagraphDialog from "@/app/admin/create_page/components/create_paragraph_dialog";
 import {usePages,Page, Paragraph} from "@/context/page_provider";
-import {useEffect, useState} from "react";
 import {getSession} from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast"
 import ElementParagraph from "@/app/admin/create_page/components/element_paragraph";
 import {ScrollArea} from "@/components/ui/scroll-area";
 
-export default  function Form(){
-    const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
-    const [token,setToken] = useState("");
+
+
+interface Props {
+    localPage: Page
+    handleParagraph: Function
+    deleteParagraph: Function
+    savePage: Function
+}
+
+
+export default  function Form(props: Props){
     const { toast } = useToast()
 
-    useEffect(() => {
-        async function fetchSession() {
-            const session = await getSession();
-            setToken(session?.user?.name ?? 'session not found');
-        }
-        fetchSession();
-    }, []);
-
-    const [localPage, setLocalPage] = useState({
-        id: '',
-        page: {
-            title: '',
-            paragraphs: []
-        },
-        time: new Date().toDateString()
-    });
-
-    const handleChange = (newParagraph: Paragraph) => {
-        // @ts-ignore
-        setLocalPage(prevLocalPage => ({
-            ...prevLocalPage,
-            page: {
-                ...prevLocalPage.page,
-                paragraphs: [...prevLocalPage.page.paragraphs, newParagraph]
-            }
-        }));
-    };
-
-    const savePage = () => {
-        //Todo Make full check on the content with the function
-        addPage(localPage, token);
-    };
-
-
-    const deleteParagraph = (index:number) => {
-        setLocalPage(prevLocalPage => {
-            const newParagraphs = [...prevLocalPage.page.paragraphs];
-            newParagraphs.splice(index, 1);
-            return {
-                ...prevLocalPage,
-                page: {
-                    ...prevLocalPage.page,
-                    paragraphs: newParagraphs
-                }
-            };
-        });
-    };
 
     return (
         <div>
@@ -93,9 +53,9 @@ export default  function Form(){
                         </TooltipProvider>
                     </div>
                     <Input maxLength={30} onChange={(event) => {
-                        localPage.id = event.target.value;
-                        localPage.page.title = event.target.value;
-                        console.log(localPage)
+                        props.localPage.id = event.target.value;
+                        props.localPage.page.title = event.target.value;
+                        console.log(props.localPage)
                     }} type="text" id="title" placeholder="Storia" className="mt-3"/>
                 </div>
             </div>
@@ -118,7 +78,7 @@ export default  function Form(){
                         </TooltipProvider>
                     </div>
 
-                    <CreateParagraphDialog handle={handleChange}/>
+                    <CreateParagraphDialog handle={props.handleParagraph}/>
 
                 </div>
             </div>
@@ -141,8 +101,8 @@ export default  function Form(){
                 </div>
                 <ScrollArea className="h-[330px]">
                     <ul>
-                        {localPage.page.paragraphs.map((paragraph:Paragraph, index) => (
-                            <ElementParagraph data={paragraph} key={index} delete={deleteParagraph} index={index}/>
+                        {props.localPage.page.paragraphs.map((paragraph:Paragraph, index) => (
+                            <ElementParagraph data={paragraph} key={index} delete={props.deleteParagraph} index={index}/>
                         ))}
                     </ul>
                 </ScrollArea>
@@ -156,7 +116,7 @@ export default  function Form(){
 
             {/* Button  */}
 
-            <ConfirmButtons save={savePage}/>
+            <ConfirmButtons save={props.savePage}/>
 
         </div>
     )
