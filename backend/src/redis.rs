@@ -153,3 +153,17 @@ pub async fn get_admin(redis_pool: Data<Pool>) -> Result<Admin, ErrorManager> {
 
     Ok(model)
 }
+
+pub async fn get_keys(redis_pool: Data<Pool>) -> Result<Vec<String>, ErrorManager> {
+    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
+
+    let cursor: u64 = 0;
+
+    let (_cursor, mut keys): (u64, Vec<String>) = redis::cmd("SCAN")
+        .arg(cursor)
+        .query_async(&mut conn)
+        .await?;
+
+    keys.retain(|x| x != "auth/admin");
+    Ok(keys)
+}
