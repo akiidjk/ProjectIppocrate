@@ -23,12 +23,18 @@ export default function CreateParagraphDialog({handle}: CreateParagraphDialogPro
     const save = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        handle({
-            title: formData.get("paragrah_title"),
-            content:formData.get("paragrah_content"),
-            image: formData.get("picture"),
-        })
-    }
+
+        let titlePicture = formData.get("picture");
+
+        if (titlePicture instanceof File) {
+            handle({
+                title: formData.get("paragrah_title"),
+                content: formData.get("paragrah_content"),
+                image_sources: [titlePicture ? titlePicture.name : undefined],
+                layout_type: 1, //temporary to create the field
+                })
+            }
+        }
 
     return (
         <div className="flex">
