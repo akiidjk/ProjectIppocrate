@@ -16,7 +16,6 @@ interface ConfirmButtonsProps {
 export default function ConfirmButtons({save}: ConfirmButtonsProps) {
     const {toast} = useToast()
 
-
     return (
         <div className="flex">
             <div className="ms-auto">
@@ -35,7 +34,9 @@ export default function ConfirmButtons({save}: ConfirmButtonsProps) {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>No meglio di no</AlertDialogCancel>
-                            <AlertDialogAction className="bg-[#f05656] hover:bg-[#ff665b]">Si
+                            <AlertDialogAction onClick={() => {
+                                window.location.reload();
+                            }} className="bg-[#f05656] hover:bg-[#ff665b]">Si
                                 ripristina!</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

@@ -27,6 +27,7 @@ export default function CreateAdminPage() {
     const [loading, setLoading] = useState(true);
     const resizeNull = useRef<ImperativePanelHandle>(null);
 
+    // TODO move the localPage structure in the page and manage all with handle
 
 
     async function getClientSideSession() {

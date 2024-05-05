@@ -15,12 +15,15 @@ import ConfirmButtons from "@/app/admin/create_page/components/confirm_buttons";
 import CreateParagraphDialog from "@/app/admin/create_page/components/create_paragraph_dialog";
 import {usePages,Page, Paragraph} from "@/context/page_provider";
 import {useEffect, useState} from "react";
-import {getSession, useSession} from "next-auth/react";
-import {get_keys, get_page} from "@/app/api/api";
+import {getSession} from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast"
+import ElementParagraph from "@/app/admin/create_page/components/element_paragraph";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 export default  function Form(){
     const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
     const [token,setToken] = useState("");
+    const { toast } = useToast()
 
     useEffect(() => {
         async function fetchSession() {
@@ -35,11 +38,9 @@ export default  function Form(){
         page: {
             title: '',
             paragraphs: []
-        }
+        },
+        time: new Date().toDateString()
     });
-
-    get_page("aaaaaaaaa")
-    get_keys(token)
 
     const handleChange = (newParagraph: Paragraph) => {
         // @ts-ignore
@@ -52,15 +53,24 @@ export default  function Form(){
         }));
     };
 
-    const handleTitleChange = (event: { target: { value: any; }; }) => {
-        setLocalPage({
-            ...localPage,
-            id: event.target.value
-        });
+    const savePage = () => {
+        //Todo Make full check on the content with the function
+        addPage(localPage, token);
     };
 
-    const savePage = () => {
-        addPage(localPage, token);
+
+    const deleteParagraph = (index:number) => {
+        setLocalPage(prevLocalPage => {
+            const newParagraphs = [...prevLocalPage.page.paragraphs];
+            newParagraphs.splice(index, 1);
+            return {
+                ...prevLocalPage,
+                page: {
+                    ...prevLocalPage.page,
+                    paragraphs: newParagraphs
+                }
+            };
+        });
     };
 
     return (
@@ -82,8 +92,9 @@ export default  function Form(){
                             </Tooltip>
                         </TooltipProvider>
                     </div>
-                    <Input onChange={(event) => {
+                    <Input maxLength={30} onChange={(event) => {
                         localPage.id = event.target.value;
+                        localPage.page.title = event.target.value;
                         console.log(localPage)
                     }} type="text" id="title" placeholder="Storia" className="mt-3"/>
                 </div>
@@ -128,18 +139,20 @@ export default  function Form(){
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-                <ul>
-                    {localPage.page.paragraphs.map((paragraph:Paragraph, index) => (
-                        <li key={index}>{paragraph.title}</li>
-                    ))}
-                </ul>
+                <ScrollArea className="h-[330px]">
+                    <ul>
+                        {localPage.page.paragraphs.map((paragraph:Paragraph, index) => (
+                            <ElementParagraph data={paragraph} key={index} delete={deleteParagraph} index={index}/>
+                        ))}
+                    </ul>
+                </ScrollArea>
             </div>
 
             <Separator className="my-4 w-3/4 me-auto ms-auto"/>
 
-            <div className="w-2/3 me-auto ms-auto mt-6">
-                <Progress value={33}/>
-            </div>
+            {/*<div className="w-2/3 me-auto ms-auto mt-6">*/}
+            {/*    <Progress value={33}/>*/}
+            {/*</div>*/}
 
             {/* Button  */}
 
