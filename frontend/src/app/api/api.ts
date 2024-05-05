@@ -65,7 +65,43 @@ export async function get_page(id_pages:string){
 }
 
 
-export async function get_keys(token:string){
+export async function get_pages(){
+
+    const requestOptions:RequestInit = {
+        method: "GET",
+        redirect: "follow"
+    };
+
+    try {
+        const response = await fetch(`http://localhost:8000/api/get_pages`, requestOptions);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+
+}
+
+
+export async function get_keys(){;
+
+    const requestOptions: RequestInit = {
+        method: "GET",
+        redirect: "follow"
+    };
+
+    fetch(`http://localhost:8000/admin/get_keys`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+
+}
+
+
+export async function remove_page(token:string,page_name:string){
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -74,12 +110,12 @@ export async function get_keys(token:string){
     console.log(myHeaders.get("Authorization"));
 
     const requestOptions: RequestInit = {
-        method: "GET",
+        method: "POST",
         headers: myHeaders,
         redirect: "follow"
     };
 
-    fetch(`http://localhost:8000/admin/get_keys`, requestOptions)
+    fetch(`http://localhost:8000/admin/remove_page/${page_name}`, requestOptions)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
