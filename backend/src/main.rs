@@ -4,8 +4,9 @@ mod redis;
 mod error_manager;
 mod auth;
 
+use actix_cors::Cors;
 use std::process::exit;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post, http};
 use actix_web::middleware::Logger;
 use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
@@ -67,6 +68,12 @@ async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<Ht
     Ok(HttpResponse::Ok().json(result))
 }
 
+#[get("/admin/get_keys")]
+async fn get_keys(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
+    let result: Vec<String> = redis::get_keys(redis_pool).await?;
+    Ok(HttpResponse::Ok().json(result))
+}
+
 #[post("/admin/create_page")]
 async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<Page>) -> impl Responder {
     match req_user {
@@ -119,13 +126,21 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         let bearer_middleware = HttpAuthentication::bearer(validator);
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:3000")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
         App::new()
             .app_data(pool_data_clone.clone())
             .service(hello)
             .service(test)
             .service(get_page)
+            .service(get_keys)
             .service(basic_auth)
             .wrap(Logger::default())
+            .wrap(cors)
             .service( 
                 web::scope("")
                     .wrap(bearer_middleware)
