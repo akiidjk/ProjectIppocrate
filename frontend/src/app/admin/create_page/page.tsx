@@ -15,9 +15,11 @@ import Form from "@/app/admin/create_page/components/form";
 import Navbar from "@/app/components/navbar";
 import {Button} from "@/components/ui/button";
 import Expand from "@/app/admin/create_page/components/svg/expand";
-
+import { RefreshCcw  } from 'lucide-react';
 import {ImperativePanelHandle} from "react-resizable-panels";
 import {Paragraph, usePages} from "@/context/page_provider";
+import PreviewPage from "@/app/admin/create_page/components/preview_page";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 
 
@@ -28,7 +30,11 @@ export default function CreateAdminPage() {
     const resizeNull = useRef<ImperativePanelHandle>(null);
     const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
     const [token,setToken] = useState("");
+    const [key, setKey] = useState(0);
 
+    const rebuildComponent = () => {
+        setKey(prevKey => prevKey + 1);
+    };
 
     // TODO move the localPage structure in the page and manage all with handle
 
@@ -132,18 +138,24 @@ export default function CreateAdminPage() {
                     <ResizablePanel defaultSize={70} minSize={65}>
                         <div
                             className="w-full dark:bg-black bg-white  dark:bg-dot-white/[0.2] bg-dot-black/[0.2]">
-                            <div className="relative top-2 left-2">
-                                <Button onClick={() => setIsFull(!isFull)} size="icon">
+                            <div className="relative flex top-2 left-2">
+                                <Button className="mr-3" onClick={() => setIsFull(!isFull)} size="icon">
                                     <Expand color={"#ffffff"} size={"30px"}/>
+                                </Button>
+                                <Button onClick={() => rebuildComponent()} size="icon">
+                                    <RefreshCcw className="stroke-white size-[30px]"/>
                                 </Button>
                             </div>
                             <div className="flex">
                                 <h1 className="ms-auto me-auto text-4xl mt-7 font-semibold">
-                                    Preview page
+                                    Anteprima della pagina
                                 </h1>
                             </div>
                             <div className="h-[81vh] flex items-center justify-center">
-                                <h1 className="font-medium text-3xl">Content Preview</h1>
+                                {/*<h1 className="font-medium text-3xl">Content Preview</h1>*/}
+                                <ScrollArea className="h-[80%]">
+                                    <PreviewPage key={key} localPage={localPage}/>
+                                </ScrollArea>
                             </div>
                         </div>
                     </ResizablePanel>
