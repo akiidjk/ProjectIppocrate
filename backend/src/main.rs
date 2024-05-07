@@ -6,22 +6,22 @@ mod auth;
 
 use actix_cors::Cors;
 use std::process::exit;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post, http};
+use actix_multipart::Multipart;
+use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post, http, HttpRequest};
+use actix_web::http::header::CONTENT_LENGTH;
 use actix_web::middleware::Logger;
 use actix_web::web::{Data, Json, ReqData};
 use deadpool_redis::{Pool, Runtime};
 use env_logger::Env;
-use log::{debug, error, info};
-use crate::model::{HTMLPage, Page, Paragraph, TokenClaims};
+use log::{error, info};
+use crate::model::{Page, TokenClaims};
 use crate::data::URL_REDIS;
-
+use mime::{Mime,IMAGE_JPEG,IMAGE_PNG};
+use futures_util::TryStreamExt  as _;
+use image::ImageFormat;
 use actix_web_httpauth::{
     middleware::HttpAuthentication,
 };
-use serde::{Deserialize, Serialize};
-
-//Only for developing
-use rand::{Rng, thread_rng};
 use crate::auth::{basic_auth, validator};
 
 #[get("/")]
@@ -30,36 +30,72 @@ async fn hello() -> impl Responder {
     HttpResponse::Ok().body("Server online!")
 }
 
-#[get("/test")] //Simple test endpoint
-async fn test(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Error> {
+#[post("/admin/upload_image")]
+async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRequest) -> HttpResponse {
+    let max_file_size = 5_000_000;
+    let max_file_count = 1;
+    let legal_filetype: [Mime; 2] = [IMAGE_JPEG,IMAGE_PNG];
 
-
-    // * Creation of test model
-    let response_content = Page {
-        id: "".to_string(),
-        page: HTMLPage {
-            title: "test page".to_string(),
-            paragraphs: vec!(paragraph!("mimmo", "questo e' un ricchissimo paragrafo", vec!("/test.png".to_string(), "/mimmo.png".to_string()), 2),
-                             paragraph!("paragrafo2", "godo forte", vec!("/a.png".to_string(), "dio.png".to_string()), 1)),
-        },
-        time:"adad".to_string()
+    let content_lenght: usize = match req.headers().get(CONTENT_LENGTH) {
+        Some(hv) => hv.to_str().unwrap_or("0").parse().unwrap(),
+        None => 0,
     };
 
-    let rnd: u32 = thread_rng().gen_range(1..=10000);
-    let key = format!("deadpool/test_key{}", rnd);
+    if content_lenght == 0 || content_lenght > max_file_size {return HttpResponse::BadRequest().into();}
 
-    redis::create_page(redis_pool.clone(), &key, response_content).await?;
+    let mut current_count: usize = 0;
+    loop {
 
-    println!("{}", key);
+        if current_count >= max_file_count {break}
 
-    let password = redis::get_admin(redis_pool.clone()).await?;
-    println!("{:?}", password);
+        if let Ok(Some(mut field)) = payload.try_next().await {
+            let filetype: Option<&Mime> = field.content_type();
+            if filetype.is_none() { return HttpResponse::BadRequest().body("File not recognized");}
+            if !legal_filetype.contains(&filetype.unwrap()) { return HttpResponse::BadRequest().body("File not supported"); }
 
-    let response_page = redis::get_page(redis_pool.clone(), &key).await?;
+            let mut file_bytes = Vec::new();
 
-    Ok(HttpResponse::Ok().json(response_page))
+            while let Ok(Some(chunk)) = field.try_next().await {
+                let data = chunk.to_vec();
+                file_bytes.extend_from_slice(&data);
+            }
+
+            match redis::create_image(redis_pool.clone(), field.name(), file_bytes).await {
+                Ok(_) => {
+                    current_count += 1;
+                }
+                Err(_) => {
+                    return HttpResponse::InternalServerError().body("Error with the storage of image");
+                }
+            }
+        } else {
+            break;
+        }
+    }
+
+    HttpResponse::Ok().finish()
 }
 
+
+#[get("/api/get_image/{name}")]
+async fn get_image(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
+    let name = route.into_inner();
+    let image_bytes: Vec<u8> = redis::get_image(redis_pool,name.as_str()).await.unwrap();
+
+    let content_type = match image::guess_format(&image_bytes) {
+        Ok(format) => match format {
+            ImageFormat::Png => "image/png",
+            ImageFormat::Jpeg => "image/jpeg",
+            _ => "application/octet-stream",
+        },
+        Err(_) => "application/octet-stream",
+    };
+
+    Ok(HttpResponse::Ok()
+        .content_type(content_type)
+        .body(actix_web::web::Bytes::from(image_bytes)))
+
+}
 
 #[get("/api/get_page/{name}")]
 async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
@@ -73,7 +109,7 @@ async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<Ht
 async fn remove_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
     info!("INFO: Handling /get_page, \"{}\" was requested", name);
-    redis::remove_page(redis_pool, &name).await?;
+    redis::remove(redis_pool, &name).await?;
     Ok(HttpResponse::Ok().json({}))
 }
 
@@ -150,11 +186,11 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(pool_data_clone.clone())
             .service(hello)
-            .service(test)
             .service(get_page)
             .service(get_keys)
             .service(get_pages)
             .service(basic_auth)
+            .service(get_image)
             .wrap(Logger::default())
             .wrap(cors)
             .service( 
@@ -162,6 +198,7 @@ async fn main() -> std::io::Result<()> {
                     .wrap(bearer_middleware)
                     .service(create_page)
                     .service(remove_page)
+                    .service(upload_image)
             )
     })
         .bind(("0.0.0.0", 8000))?

@@ -4,12 +4,6 @@ use serde::{Serialize, Deserialize};
 
 // ! Important part to be able to describe data from the backend to the db efficiently and securely
 #[derive(Serialize, Deserialize, Debug)]
-pub struct TestModel {
-    pub name: String,
-    pub age: u32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct HTMLPage {
     pub title: String,
     pub paragraphs: Vec<Paragraph>,
