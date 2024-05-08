@@ -30,9 +30,11 @@ import { useToast } from "@/components/ui/use-toast"
 
 interface CreateParagraphDialogProps {
     handle: Function
+    handleImage:Function
 }
 
-export default function CreateParagraphDialog({handle}: CreateParagraphDialogProps) {
+const PATH_IMAGE = "http//:localhost:8000/api/get_image/"
+export default function CreateParagraphDialog(props: CreateParagraphDialogProps) {
     const [open, setOpen] = React.useState(false)
     const [selectedLayout, setSelectedLayout] = React.useState<Layout | null>(
         null
@@ -44,7 +46,12 @@ export default function CreateParagraphDialog({handle}: CreateParagraphDialogPro
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
-        let titlePicture = formData.get("picture");
+        let picture = formData.get("picture");
+
+        if(picture){
+            // @ts-ignore
+            props.handleImage([picture,picture.name])
+        }
 
         if(formData.get("paragrah_title") === null || formData.get("paragrah_title") === ''){
             toast({
@@ -69,11 +76,11 @@ export default function CreateParagraphDialog({handle}: CreateParagraphDialogPro
                         })
                         return
                     }else{
-                        if (titlePicture instanceof File) {
-                            handle({
+                        if (picture instanceof File) {
+                            props.handle({
                                 title: formData.get("paragrah_title"),
                                 content: formData.get("paragrah_content"),
-                                image_sources: [titlePicture ? titlePicture.name : undefined],
+                                image_sources: [picture ? PATH_IMAGE + picture.name : undefined],
                                 layout_type: parseInt(selectedLayout?.value as string), //temporary to create the field
                             })
                         }

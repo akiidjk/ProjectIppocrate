@@ -1,6 +1,6 @@
 "use client"
 import {createContext, useContext, useEffect, useState} from "react";
-import {create_page, get_pages, remove_page} from "@/app/api/api";
+import {FileStringTuple, create_page, get_pages, remove_page, upload_image} from "@/app/api/api";
 
 
 export type Paragraph = {
@@ -24,7 +24,7 @@ export type Page = {
 
 type PagesContextType = {
     pages: Page[];
-    addPage: (page: Page,token:string) => void;
+    addPage: (page: Page,token:string,files: FileStringTuple[]) => void;
     addParagraph: (newParagraph: Paragraph, idPage: string) => void;
     removeParagraph: (index: number, idPage: string) => void;
     addParagraphs: (newParagraphs: Paragraph[], idPage: string) => void;
@@ -53,12 +53,13 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
         }).catch(error => console.error("Error fetching pages:", error));
     }, []);
 
-    const addPage = (newPage: Page,token:string) => {
+    const addPage = (newPage: Page,token:string,files: FileStringTuple[]) => {
         setPages(prevPages => [...prevPages, newPage]); //Locally
         console.log(newPage)
         create_page(token, newPage).then(r => { //DB
             console.log("RICHIESTA INVIATA")
         })
+        upload_image(token,files)
     };
 
     const remove_page_by_index = (token:string,index: number) => {
@@ -99,7 +100,7 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
         <PagesContext.Provider value={{ pages, addPage,remove_page_by_index, addParagraph, removeParagraph, addParagraphs }}>
             {children}
         </PagesContext.Provider>
-    );
+            );
 };
 
 export const usePages = () => useContext(PagesContext);

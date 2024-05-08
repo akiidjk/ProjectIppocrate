@@ -13,9 +13,7 @@ import { Separator } from "@/components/ui/separator"
 
 import ConfirmButtons from "@/app/admin/create_page/components/confirm_buttons";
 import CreateParagraphDialog from "@/app/admin/create_page/components/create_paragraph_dialog";
-import {usePages,Page, Paragraph} from "@/context/page_provider";
-import {getSession} from "next-auth/react";
-import { useToast } from "@/components/ui/use-toast"
+import {Page, Paragraph} from "@/context/page_provider";
 import ElementParagraph from "@/app/admin/create_page/components/element_paragraph";
 import {ScrollArea} from "@/components/ui/scroll-area";
 
@@ -26,12 +24,11 @@ interface Props {
     handleParagraph: Function
     deleteParagraph: Function
     savePage: Function
+    handleImage:Function
 }
 
 
 export default  function Form(props: Props){
-    const { toast } = useToast()
-
 
     return (
         <div>
@@ -78,7 +75,7 @@ export default  function Form(props: Props){
                         </TooltipProvider>
                     </div>
 
-                    <CreateParagraphDialog handle={props.handleParagraph}/>
+                    <CreateParagraphDialog handleImage={props.handleImage} handle={props.handleParagraph}/>
 
                 </div>
             </div>
