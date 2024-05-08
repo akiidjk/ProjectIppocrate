@@ -33,7 +33,7 @@ async fn hello() -> impl Responder {
 #[post("/admin/upload_image")]
 async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRequest) -> HttpResponse {
     let max_file_size = 5_000_000;
-    let max_file_count = 1;
+    let max_file_count = 5;
     let legal_filetype: [Mime; 2] = [IMAGE_JPEG,IMAGE_PNG];
 
     let content_lenght: usize = match req.headers().get(CONTENT_LENGTH) {
@@ -45,7 +45,7 @@ async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRe
 
     let mut current_count: usize = 0;
     loop {
-
+        
         if current_count >= max_file_count {break}
 
         if let Ok(Some(mut field)) = payload.try_next().await {
