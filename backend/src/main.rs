@@ -60,9 +60,9 @@ async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRe
                 file_bytes.extend_from_slice(&data);
             }
 
-            let key = format!("image/{}",field.name());
+            let key = format!("image-{}",field.name());
 
-            match redis::create_image(redis_pool.clone(), key , file_bytes).await {
+            match redis::create_image(redis_pool.clone(), &key , file_bytes).await {
                 Ok(_) => {
                     current_count += 1;
                 }

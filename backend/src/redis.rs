@@ -8,6 +8,7 @@ use crate::error_manager::ErrorManager;
 use crate::model::{Admin, Page};
 use uuid::Uuid;
 use crate::data::PASSWORD_ADMIN;
+use log::debug;
 // * --------------------------- MACRO ----------------------------
 
 #[macro_export]
@@ -78,8 +79,6 @@ pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Resul
 
 fn generate_html(page_data: &mut Page) -> () {
 
-    page_data.page.title = format!("<title>{}</title>", page_data.page.title);
-
     for paragraph in page_data.page.paragraphs.iter_mut() {
         println!("layout type: {}", paragraph.layout_type);
         let mut title_attributes: String = "lg:text-[54px] sm:text-[34px] font-bold mb-".to_string();
@@ -100,7 +99,7 @@ fn generate_html(page_data: &mut Page) -> () {
         println!("INFO: images: ");
 
         for s in paragraph.image_sources.iter_mut() {
-            *s = format!("<Image width={{1070}} height={{570}} class=\"{}\" src={{\"{}\"}} alt={{\"image\"}} />", image_classnames, s);
+            *s = format!("<Image width={{1070}} height={{570}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
             println!("{}", *s);
         }
 
@@ -157,7 +156,10 @@ pub async fn get_keys(redis_pool: Data<Pool>) -> Result<Vec<String>, ErrorManage
         .query_async(&mut conn)
         .await?;
 
-    keys.retain(|x| x != "auth/admin");
+    keys.retain(|x| {
+        x != "auth/admin" && !x.contains("image-")
+    });
+    debug!("Keys valid {:?}",keys);
     Ok(keys)
 }
 
