@@ -2,8 +2,8 @@
 
 const nextConfig = {
     images: {
-        // remotePatterns: ['localhost'],
-    },
+        domains: ["localhost:8000"]
+    }
 };
 
 export default nextConfig;
