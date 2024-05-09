@@ -33,7 +33,7 @@ export default function CardPage(props: Props) {
         <div className="m-5">
             <Card>
                 <CardHeader>
-                    <CardTitle>{props.data.id}</CardTitle>
+                    <CardTitle>{props.data.page.title}</CardTitle>
                     <CardDescription>{props.data.time}</CardDescription>
                 </CardHeader>
                 <CardFooter>
