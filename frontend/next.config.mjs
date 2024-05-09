@@ -2,7 +2,7 @@
 
 const nextConfig = {
     images: {
-        domains: ["localhost:8000"]
+        domains: ["localhost:8000","backend"]
     }
 };
 

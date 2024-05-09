@@ -33,7 +33,8 @@ interface CreateParagraphDialogProps {
     handleImage:Function
 }
 
-const PATH_IMAGE = "http://localhost:8000/api/get_image/"
+// const PATH_IMAGE = "http://localhost:8000/api/get_image/"
+const PATH_IMAGE = "http://backend/api/get_image/"
 export default function CreateParagraphDialog(props: CreateParagraphDialogProps) {
     const [open, setOpen] = React.useState(false)
     const [selectedLayout, setSelectedLayout] = React.useState<Layout | null>(
