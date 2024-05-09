@@ -3,6 +3,10 @@ import {Page} from "@/context/page_provider";
 const BASE_ENDPOINT = "http://localhost:8000";
 // const BASE_ENDPOINT = "http://backend:8000";
 
+
+export type FileStringTuple = [File, string];
+
+
 export async function getAuth(credentials:Record<"username" | "password", string> | undefined){
     let headers = {
         'Authorization': `Basic ${btoa(`${credentials?.username}:${credentials?.password}`)}`
@@ -120,4 +124,29 @@ export async function remove_page(token:string,page_name:string){
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
 
+}
+
+export async function upload_image(token:string, images:FileStringTuple[]){
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    const formdata = new FormData();
+
+    for(let i = 0;i<images.length;i++){
+        formdata.append(images[i][1], images[i][0], "-.jpg");
+    
+    }
+
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow"
+      };
+      
+      fetch("http://localhost:8000/admin/upload_image", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    
+   
 }

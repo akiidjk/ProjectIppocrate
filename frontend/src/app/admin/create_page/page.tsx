@@ -27,6 +27,7 @@ export default function CreateAdminPage() {
     const router = useRouter();
     const [isFull, setIsFull] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [files, setFiles] = useState<[File, string][]>([]);
     const resizeNull = useRef<ImperativePanelHandle>(null);
     const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
     const [token,setToken] = useState("");
@@ -35,8 +36,6 @@ export default function CreateAdminPage() {
     const rebuildComponent = () => {
         setKey(prevKey => prevKey + 1);
     };
-
-    // TODO move the localPage structure in the page and manage all with handle
 
     useEffect(() => {
         async function fetchSession() {
@@ -66,9 +65,17 @@ export default function CreateAdminPage() {
         }));
     };
 
+    const handleImage = (newImage: [File, string]) => {
+        setFiles(prevFiles => [
+            ...prevFiles,
+            newImage
+        ]);
+    }
+    
+
     const savePage = () => {
         //Todo Make full check on the content with the function
-        addPage(localPage, token);
+        addPage(localPage, token, files);
     };
 
 
@@ -84,6 +91,8 @@ export default function CreateAdminPage() {
                 }
             };
         });
+
+        setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
     };
 
 
@@ -130,7 +139,7 @@ export default function CreateAdminPage() {
                                     </h1>
                                 </div>
                                 <div>
-                                    <Form deleteParagraph={deleteParagraph} handleParagraph={handleParagraph} localPage={localPage} savePage={savePage}/>
+                                    <Form deleteParagraph={deleteParagraph} handleParagraph={handleParagraph} localPage={localPage} savePage={savePage} handleImage={handleImage}/>
                                 </div>
                             </ResizablePanel>
                     }
