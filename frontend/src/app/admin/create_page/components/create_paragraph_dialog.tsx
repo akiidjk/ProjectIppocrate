@@ -33,7 +33,7 @@ interface CreateParagraphDialogProps {
     handleImage:Function
 }
 
-const PATH_IMAGE = "http//:localhost:8000/api/get_image/"
+const PATH_IMAGE = "http://localhost:8000/api/get_image/"
 export default function CreateParagraphDialog(props: CreateParagraphDialogProps) {
     const [open, setOpen] = React.useState(false)
     const [selectedLayout, setSelectedLayout] = React.useState<Layout | null>(
@@ -80,7 +80,7 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
                             props.handle({
                                 title: formData.get("paragrah_title"),
                                 content: formData.get("paragrah_content"),
-                                image_sources: [picture ? PATH_IMAGE + picture.name : undefined],
+                                image_sources: [picture ? PATH_IMAGE + "image-" + picture.name : undefined],
                                 layout_type: parseInt(selectedLayout?.value as string), //temporary to create the field
                             })
                         }
@@ -118,10 +118,6 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
         {
             value: "5",
             label:  "5",
-        },
-        {
-            value: "6",
-            label:  "6",
         },
     ]
 
