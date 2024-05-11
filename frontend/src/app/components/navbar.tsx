@@ -12,7 +12,7 @@ export default function Navbar(){
                         <span className="">
                                 <Image 
                                 className="rounded-full ml-9 py-3"
-                                src="/gabibboo_navbar.jpg"
+                                src="/Logo.svg"
                                 width={45}
                                 height={45}
                                 alt="Picture of gabibbo"
