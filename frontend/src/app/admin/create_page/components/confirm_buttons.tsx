@@ -6,7 +6,7 @@ import {
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 import {Button} from "@/components/ui/button";
-import {useToast} from "@/components/ui/use-toast";
+
 
 
 interface ConfirmButtonsProps {
@@ -14,7 +14,6 @@ interface ConfirmButtonsProps {
 }
 
 export default function ConfirmButtons({save}: ConfirmButtonsProps) {
-    const {toast} = useToast()
 
     return (
         <div className="flex">
@@ -60,10 +59,6 @@ export default function ConfirmButtons({save}: ConfirmButtonsProps) {
                                 if (save) {
                                     save()
                                 }
-                                toast({
-                                    className: "bg-[#3aba6f] text-[#fdfdfd]",
-                                    description: "Pagina salvata e inviata con successo",
-                                })
                             }}>
                                 Si salva!
                             </AlertDialogAction>
