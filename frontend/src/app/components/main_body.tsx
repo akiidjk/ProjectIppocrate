@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import {globeConfig,sampleArcs} from "../../data/data"
+import {globeConfig,sampleArcs} from "@/data/data"
 
 const World = dynamic(() => import("./AcernityUI/globe").then((m) => m.World), {
     ssr: false,
@@ -15,7 +15,8 @@ export default function MainBody(){
                 <div className="float-left w-[50%]">
                     <div className="w-[500px] ms-auto me-auto m-20">
                         <p className="font-normal text-[24px]">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.                        </p>
+                            L&apos;Obiettivo 3 di questi SDGs si focalizza sulla salute e il benessere e ha lo scopo di &ldquo;garantire una vita sana e promuovere il benessere per tutti a tutte le età&ldquo;. Questo obiettivo include una serie di traguardi specifici che spaziano dal ridurre la mortalità materna e neonatale, combattere malattie come l&apos;AIDS, la tubercolosi, la malaria e altre malattie trasmissibili, fino alla promozione della salute mentale e del benessere. Inoltre, punta a garantire l&apos;accesso universale a servizi sanitari di qualità, compresa la protezione sanitaria universale, i medicinali e i vaccini essenziali
+                        </p>
                     </div>
                     
                 </div>               

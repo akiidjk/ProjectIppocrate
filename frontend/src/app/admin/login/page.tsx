@@ -7,10 +7,12 @@ import { cn } from "@/utils/cn";
 
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import {useToast} from "@/components/ui/use-toast";
+
 
 export default function LoginAdminPage(){
-
     const router = useRouter();
+    const {toast} = useToast()
 
     const login = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -22,15 +24,32 @@ export default function LoginAdminPage(){
 
         try {
             // Assuming signIn is an asynchronous function
-            await signIn("credentials", {
+            let result = await signIn("credentials", {
                 username,
                 password,
                 redirect: false,
             });
-        
-          router.push("/admin/dashboard");
+
+
+            // @ts-ignore
+            if(result.status !== 200){
+                toast({
+                    variant:"destructive",
+                    description: "Oh no!! un c'è stato une errore con l'accesso",
+                })
+            }else{
+                toast({
+                    className: "bg-[#3aba6f] text-[#fdfdfd]",
+                    description: "Login avvennuto con successo",
+                })
+                router.push("/admin/dashboard");
+            }
+
       } catch (error) {
-          console.error("Errore durante il login:", error);
+            toast({
+                variant:"destructive",
+                description: "Oh no!! un c'è stato une errore con l'accesso",
+            })
       }
     };
 

@@ -52,7 +52,6 @@ export default  function Form(props: Props){
                     <Input maxLength={30} onChange={(event) => {
                         props.localPage.id = (event.target.value as string).trim().replace(/\s+/g, '').toLowerCase();
                         props.localPage.page.title = event.target.value;
-                        console.log(props.localPage)
                     }} type="text" id="title" placeholder="Storia" className="mt-3"/>
                 </div>
             </div>

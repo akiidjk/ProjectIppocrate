@@ -26,22 +26,56 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+
 import { useToast } from "@/components/ui/use-toast"
+
+const PATH_IMAGE = "http://localhost:8000/api/get_image/"
 
 interface CreateParagraphDialogProps {
     handle: Function
     handleImage:Function
 }
+type Layout = {
+    value: string
+    label: string
+}
 
-const PATH_IMAGE = "http://localhost:8000/api/get_image/"
+const Layouts: Layout[] = [
+    {
+        value: "1",
+        label: "1",
+    },
+    {
+        value: "2",
+        label:  "2",
+    },
+    {
+        value: "3",
+        label:  "3",
+    },
+    {
+        value: "4",
+        label: "4",
+    },
+    {
+        value: "5",
+        label:  "5",
+    },
+]
+
+
+
+const MAX_FILE_SIZE_MB = 5
+function checkPicture(picture: File){
+    return picture.type === 'image/jpeg' || picture.type === 'image/png' && picture.size <= MAX_FILE_SIZE_MB * 1024 * 1024;
+}
 
 export default function CreateParagraphDialog(props: CreateParagraphDialogProps) {
     const [open, setOpen] = React.useState(false)
     const [selectedLayout, setSelectedLayout] = React.useState<Layout | null>(
-        null
+        Layouts[0]
     )
     const { toast } = useToast()
-
 
     const save = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -49,40 +83,63 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
 
         let picture = formData.get("picture");
 
-        if(picture){
-            // @ts-ignore
-            props.handleImage([picture,picture.name])
+
+        // @ts-ignore
+        if(selectedLayout === '' || selectedLayout === null) {
+            toast({
+                variant:"destructive",
+                title: "Errore nel form",
+                description: "Ricordati di inserire l'immagine prima di salvare",
+            })
+            return
         }
 
-        if(formData.get("paragrah_title") === null || formData.get("paragrah_title") === ''){
+        if (picture instanceof File) {
+            if (picture.name !== '' && (selectedLayout.value === "1" || selectedLayout.value === "2" || selectedLayout.value === "4" || selectedLayout.value === "5")) {
+                //@ts-ignore
+                if (checkPicture(picture)) {
+                        props.handleImage([picture, picture.name])
+                } else {
+                    toast({
+                        variant: "destructive",
+                        title: "Errore nella immagine",
+                        description: "Immagine non è di un formato valido oppure è troppo grande",
+                    })
+                }
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Errore nella immagine",
+                    description: "Immagine non è di un formato valido oppure è troppo grande",
+                })
+                return
+            }
+        }
+
+
+
+
+        if((formData.get("paragrah_title") === null || formData.get("paragrah_title") === '')  && (selectedLayout.value === "1" || selectedLayout.value === "3" || selectedLayout.value === "4")){
             toast({
                 variant:"destructive",
                 title: "Errore nel form",
                 description: "Ricordati di inserire il titolo prima di salvare",
             })
             return
-        }else if(formData.get("paragrah_content") === null || formData.get("paragrah_content") === ''){
+        } else if(formData.get("paragrah_content") === null || formData.get("paragrah_content") === ''){
             toast({
                 variant:"destructive",
                 title: "Errore nel form",
                 description: "Ricordati di inserire del contenuto prima di salvare",
             })
             return
-        } else { // @ts-ignore
-            if(selectedLayout === '' || selectedLayout === null){
-                        toast({
-                            variant:"destructive",
-                            title: "Errore nel form",
-                            description: "Ricordati di specificare un layout prima di salvare",
-                        })
-                        return
-                    }else{
-                        if (picture instanceof File) {
+        } else {
+            if (picture instanceof File) {
                             props.handle({
                                 title: formData.get("paragrah_title"),
                                 content: formData.get("paragrah_content"),
                                 image_sources: [picture ? PATH_IMAGE + "image-" + picture.name : undefined],
-                                layout_type: parseInt(selectedLayout?.value as string), //temporary to create the field
+                                layout_type: parseInt(selectedLayout?.value as string),
                             })
                         }
                         toast({
@@ -90,39 +147,9 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
                                 description: "Paragrafo salvata e inviata con successo",
                             })
                     }
-        }
-        }
+            }
 
-    type Layout = {
-        value: string
-        label: string
-    }
-
-    //Todo change label with small description
-    const Layouts: Layout[] = [
-        {
-            value: "1",
-            label: "1",
-        },
-        {
-            value: "2",
-            label: "2",
-        },
-        {
-            value: "3",
-            label: "3",
-        },
-        {
-            value: "4",
-            label: "4",
-        },
-        {
-            value: "5",
-            label:  "5",
-        },
-    ]
-
-        return (
+    return (
             <div className="flex">
                 <Dialog>
                     <DialogTrigger asChild className="ms-auto mt-3 me-auto bg-[#fdfdfd]">
@@ -135,13 +162,14 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
                             <DialogTitle>Crea il paragrafo</DialogTitle>
                             <DialogDescription>
                                 Crea un paragrafo da inserire nella pagina; Gli spazi da compilari
-                                segnati &apos;*&apos; sono opzionali
+                                segnati &apos;*&apos; sono opzionali ma variano a seconda del layout inserito
                             </DialogDescription>
                         </DialogHeader>
                         <form className="my-8" onSubmit={save}>
                             <div>
                                 <div>
-                                    <Label htmlFor="paragrah_title">Titolo paragrafo</Label>
+                                    {/*@ts-ignore*/}
+                                    <Label htmlFor="paragrah_title">Titolo paragrafo {selectedLayout.value === "2" || selectedLayout.value === "5"  ? '*' : ''}</Label>
                                     <Input maxLength={40} type="text" name="paragrah_title" id="paragrah_title"
                                            placeholder="Lo svillupo del benessere"/>
                                 </div>
@@ -151,7 +179,8 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
                                               placeholder="Bla bla bla" id="paragrah_content"/>
                                 </div>
                                 <div>
-                                    <Label htmlFor="picture">Immagine</Label>
+                                    {/*@ts-ignore*/}
+                                    <Label htmlFor="picture">Immagine {selectedLayout.value === "3"  ? '*' : ''} </Label>
                                     <Input id="picture" type="file" name="picture"/>
                                 </div>
                                 <div>

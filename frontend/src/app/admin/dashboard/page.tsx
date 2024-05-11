@@ -26,7 +26,6 @@ export default function Dashboard(){
 
     useEffect(() => {
         getClientSideSession().then(session => {
-            console.log(session)
             if (!session) {
               router.replace("/admin/login")
               return null
@@ -55,26 +54,40 @@ export default function Dashboard(){
                             <CardDescription>Premi sul bottone per creare una nuova pagina</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p>Card Content</p>
+                            <ul className="list-disc m-3">
+                                <li>
+                                    Potrai creare nuove pagine
+                                </li>
+                                <li>
+                                    Potrai sperimentare nuovi stili
+                                </li>
+                            </ul>
                         </CardContent>
                         <CardFooter>
                             <Button onClick={() => router.push("/admin/create_page")}>
-                                Add
+                                Crea
                             </Button>
                         </CardFooter>
                     </Card>
 
                     <Card className="w-[450px] h-[450px] m-20">
-                        <CardHeader>
+                    <CardHeader>
                             <CardTitle>Rimuovi una pagina</CardTitle>
                             <CardDescription>Premi il bottone per rimuovere una pagina esistene</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p>Card Content</p>
+                            <ul className="list-disc m-3">
+                                <li>
+                                    Potrai visualizzare tutte le pagina create
+                                </li>
+                                <li>
+                                    Potrai rimuovere le pagina che non ti interessano piu
+                                </li>
+                            </ul>
                         </CardContent>
                         <CardFooter>
                             <Button onClick={() => router.push("/admin/delete_page")}>
-                                Remove
+                                Rimuovi
                             </Button>
                         </CardFooter>
                     </Card>

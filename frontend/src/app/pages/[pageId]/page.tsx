@@ -24,8 +24,6 @@ export default function PageTemplate({ params }: { params: { pageId: string }; }
         return <Loader />;
     }
 
-    console.log(pageTarget.page.paragraphs)
-
     return (
         <div>
             <Navbar />

@@ -20,6 +20,7 @@ import {ImperativePanelHandle} from "react-resizable-panels";
 import {Paragraph, usePages} from "@/context/page_provider";
 import PreviewPage from "@/app/admin/create_page/components/preview_page";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import {useToast} from "@/components/ui/use-toast";
 
 
 
@@ -29,9 +30,11 @@ export default function CreateAdminPage() {
     const [loading, setLoading] = useState(true);
     const [files, setFiles] = useState<[File, string][]>([]);
     const resizeNull = useRef<ImperativePanelHandle>(null);
-    const { pages, addPage, addParagraph,addParagraphs, removeParagraph } = usePages();
+    const { addPage } = usePages();
     const [token,setToken] = useState("");
     const [key, setKey] = useState(0);
+    const {toast} = useToast()
+
 
     const rebuildComponent = () => {
         setKey(prevKey => prevKey + 1);
@@ -74,8 +77,30 @@ export default function CreateAdminPage() {
     
 
     const savePage = () => {
-        //Todo Make full check on the content with the function
-        addPage(localPage, token, files);
+        addPage(localPage, token, files).then(r => {
+            if(r != 200){
+                toast({
+                    variant:"destructive",
+                    description: "Oh no!! un c'è stato une errore con la creazione della pagina",
+                })
+            }else {
+                toast({
+                    className: "bg-[#3aba6f] text-[#fdfdfd]",
+                    description: "Pagina salvata e inviata con successo",
+                })
+            }
+        });
+        setLocalPage(
+            {
+                id: '',
+                page: {
+                    title: '',
+                    paragraphs: []
+                },
+                time: new Date().toDateString()
+            }
+        )
+
     };
 
 
@@ -108,7 +133,6 @@ export default function CreateAdminPage() {
 
     useEffect(() => {
         getClientSideSession().then(session => {
-            console.log(session)
             if (!session) {
               router.replace("/admin/login")
               return null

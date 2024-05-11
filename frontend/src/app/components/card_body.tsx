@@ -64,7 +64,7 @@ export default function BodyCard(){
         <>
             <div className="mt-100 w-[100%]">
                 <div className="">
-                    <h1 className="font-bold text-center  text-[50px]">   Start to see this</h1>
+                    <h1 className="font-bold text-center  text-[50px]">Comincia a vedere questo...</h1>
                 </div>
                 <BentoGrid className="max-w-4xl m-20 mx-auto md:auto-rows-[20rem]">
                     {items_bentobox.map((item, i) => (

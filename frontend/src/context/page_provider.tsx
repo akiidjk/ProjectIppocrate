@@ -24,20 +24,20 @@ export type Page = {
 
 type PagesContextType = {
     pages: Page[];
-    addPage: (page: Page,token:string,files: FileStringTuple[]) => void;
+    addPage: (page: Page,token:string,files: FileStringTuple[]) => Promise<number>;
     addParagraph: (newParagraph: Paragraph, idPage: string) => void;
-    removeParagraph: (index: number, idPage: string) => void;
+    removeParagraph: (index: number, idPage: string) => void
     addParagraphs: (newParagraphs: Paragraph[], idPage: string) => void;
-    remove_page_by_index: (token:string,index: number) => void;
+    remove_page_by_index: (token:string,index: number) => Promise<number>;
 };
 
 const defaultPagesContext: PagesContextType = {
     pages: [],
-    addPage: () => {},
+    addPage: async  () => {return 1},
     addParagraph: () => {},
-    removeParagraph: () => {},
+    removeParagraph:   () => {},
     addParagraphs: () => {},
-    remove_page_by_index: ()=> {},
+    remove_page_by_index: async ()=> {return 1},
 };
 
 const PagesContext = createContext<PagesContextType>(defaultPagesContext);
@@ -49,27 +49,51 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         get_pages().then(fetchedPages => {
-            setPages(fetchedPages);  // Assumi che `fetchedPages` sia già nel formato corretto
+            setPages(fetchedPages);
         }).catch(error => console.error("Error fetching pages:", error));
     }, []);
 
-    const addPage = (newPage: Page,token:string,files: FileStringTuple[]) => {
-        setPages(prevPages => [...prevPages, newPage]); //Locally
-        console.log(newPage)
-        create_page(token, newPage).then(r => { //DB
-            console.log("RICHIESTA INVIATA")
-        })
-        upload_image(token,files)
+    const addPage = async (newPage: Page, token: string, files: FileStringTuple[]) => {
+        try {
+            // @ts-ignore
+            setPages(prevPages => {
+                // @ts-ignore
+                if(prevPages !== 300) {
+                    return [...prevPages, newPage];
+                } else {
+                    return 300;
+                }
+            });
+
+            const result_code = await create_page(token, newPage);
+            const result_code_upload = await upload_image(token, files);
+
+            if (result_code !== 200 || result_code_upload !== 200) {
+                return 300; // Restituisci un codice di errore generico
+            } else {
+                return 200; // Restituisci un codice di successo
+            }
+        } catch (error) {
+            console.error("Errore durante l'aggiunta della pagina:", error);
+            return 300; // Restituisci un codice di errore generico
+        }
     };
 
-    const remove_page_by_index = (token:string,index: number) => {
+
+    const remove_page_by_index = async (token: string, index: number) => {
         let name_page = pages[index].id
-        console.log(name_page)
         setPages(prevPages => [
             ...prevPages.slice(0, index),
             ...prevPages.slice(index + 1)
         ]);
-        remove_page(token,name_page)
+        let result = await remove_page(token, name_page)
+
+        if (result != 200) {
+            return 300;
+        } else {
+            return 200
+        }
+
     };
 
     const addParagraph = (newParagraph: Paragraph, idPage: string) => {
