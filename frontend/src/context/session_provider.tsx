@@ -8,12 +8,12 @@ interface ProviderProps {
   session: any;
 }
 
-const Provider: React.FC<ProviderProps> = ({ children, session }) => {
+const ProviderSession: React.FC<ProviderProps> = ({ children, session }) => {
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       {children}
     </SessionProvider>
   );
 };
 
-export default Provider;
+export default ProviderSession;

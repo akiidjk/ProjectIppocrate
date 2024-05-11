@@ -1,10 +1,14 @@
-import NextAuth from "next-auth/next";
-import type { AuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
 import {getAuth} from "@/app/api/api";
 // import bcrypt from "bcrypt";
 
-export const authOptions: AuthOptions = {
+
+interface Admin extends User{
+    token: string
+}
+
+const authOptions: NextAuthOptions = {
     session : {
       strategy: "jwt"
     },
@@ -13,9 +17,9 @@ export const authOptions: AuthOptions = {
     },
     callbacks: {
         async jwt({ user, token }) {
-            //TODO Fix the issue of the parameter (In fact, if you add a parameter to user when trying to retrieve the added value and thus not a default key, it probably disappears due to a TYPE issue )
+            const admin = user as Admin
             if (user) {
-                token.name = user.token;
+                token.name = admin.token;
             }
             return token;
         },
@@ -37,7 +41,7 @@ export const authOptions: AuthOptions = {
 
                 const res = await getAuth(credentials)
 
-                const user = res.value
+                const user = res.value  as Admin
 
                 if (res.success && user) {
                     return user

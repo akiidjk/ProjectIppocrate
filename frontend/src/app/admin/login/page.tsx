@@ -28,7 +28,7 @@ export default function LoginAdminPage(){
                 redirect: false,
             });
         
-          router.push("/admin/create_page");
+          router.push("/admin/dashboard");
       } catch (error) {
           console.error("Errore durante il login:", error);
       }

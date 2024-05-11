@@ -5,11 +5,11 @@ import BodyCard from "./components/card_body";
 
 export default function Home() {
   return (
-    <main className="">
-        <Navbar/>
-        <MainTitle/>
-        <MainBody/>
-        <BodyCard/>
-    </main>
+      <main>
+          <Navbar/>
+          <MainTitle/>
+          <MainBody/>
+          <BodyCard/>
+      </main>
   );
 }
