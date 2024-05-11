@@ -3,13 +3,20 @@ use serde::{Serialize, Deserialize};
 // * Implement of model for the representation of data
 
 // ! Important part to be able to describe data from the backend to the db efficiently and securely
-#[derive(Serialize, Deserialize, Debug)]
+
+#[derive(Serialize, Deserialize, Debug,Clone)]
+pub struct Page{
+    pub id: String,
+    pub page: HTMLPage,
+    pub time:String
+}
+#[derive(Serialize, Deserialize, Debug,Clone)]
 pub struct HTMLPage {
     pub title: String,
     pub paragraphs: Vec<Paragraph>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug,Clone)]
 pub struct Paragraph {
     pub title: String,
     pub content: String,
@@ -34,12 +41,5 @@ pub struct Admin {
     pub id: String,
     pub username: String,
     pub password: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Page{
-    pub id: String,
-    pub page: HTMLPage,
-    pub time:String
 }
 

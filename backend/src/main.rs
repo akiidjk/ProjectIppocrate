@@ -3,6 +3,7 @@ mod model;
 mod redis;
 mod error_manager;
 mod auth;
+mod sanitizer;
 
 use actix_cors::Cors;
 use std::process::exit;
@@ -23,12 +24,21 @@ use actix_web_httpauth::{
     middleware::HttpAuthentication,
 };
 use crate::auth::{basic_auth, validator};
+use crate::sanitizer::{sanitize_page, SanitizeOptions};
 
 #[get("/")]
 async fn hello() -> impl Responder {
     info!("Handling request for /hello endpoint");
     HttpResponse::Ok().body("Server online!")
 }
+
+
+const BASE_OPTION: SanitizeOptions = SanitizeOptions{
+    remove_html_tags: true,
+    remove_internal_spaces: true,
+    trim_whitespace: true,
+    convert_to_lowercase: true,
+};
 
 #[post("/admin/upload_image")]
 async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRequest) -> HttpResponse {
@@ -60,7 +70,8 @@ async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRe
                 file_bytes.extend_from_slice(&data);
             }
 
-            let key = format!("image-{}",field.name());
+            let name_cleaned  = sanitizer::sanitize_string(field.name(),BASE_OPTION);
+            let key = format!("image-{}",name_cleaned);
 
             match redis::create_image(redis_pool.clone(), &key , file_bytes).await {
                 Ok(_) => {
@@ -82,8 +93,8 @@ async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRe
 #[get("/api/get_image/{name}")]
 async fn get_image(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
-    let image_bytes: Vec<u8> = redis::get_image(redis_pool,name.as_str()).await.unwrap();
-
+    let name_cleaned  = sanitizer::sanitize_string(name.as_str(),BASE_OPTION);
+    let image_bytes: Vec<u8> = redis::get_image(redis_pool,name_cleaned.as_str()).await.unwrap();
     let content_type = match image::guess_format(&image_bytes) {
         Ok(format) => match format {
             ImageFormat::Png => "image/png",
@@ -102,15 +113,17 @@ async fn get_image(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<H
 #[get("/api/get_page/{name}")]
 async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
-    info!("INFO: Handling /get_page, \"{}\" was requested", name);
-    let result = redis::get_page(redis_pool, &name).await?;
+    let name_cleaned  = sanitizer::sanitize_string(name.as_str(),BASE_OPTION);
+    info!("INFO: Handling /get_page, \"{}\" was requested", name_cleaned);
+    let result = redis::get_page(redis_pool, &name_cleaned).await?;
     Ok(HttpResponse::Ok().json(result))
 }
 
 #[post("/admin/remove_page/{name}")]
 async fn remove_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
-    info!("INFO: Handling /get_page, \"{}\" was requested", name);
+    let name_cleaned  = sanitizer::sanitize_string(name.as_str(),BASE_OPTION);
+    info!("INFO: Handling /get_page, \"{}\" was requested", name_cleaned);
     redis::remove(redis_pool, &name).await?;
     Ok(HttpResponse::Ok().json({}))
 }
@@ -131,8 +144,7 @@ async fn get_keys(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Err
 async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<Page>) -> impl Responder {
     match req_user {
         Some(_user) => {
-            let page: Page = body.into_inner();
-            // Query to add the page
+            let page: Page = sanitize_page(&body.into_inner());
             info!("{:?}",page);
             if redis::create_page(redis_pool, &page.id.clone(), page).await.unwrap() {
                 HttpResponse::Ok().json("Page created")
