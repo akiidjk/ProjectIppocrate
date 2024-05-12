@@ -12,11 +12,10 @@ import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast";
 
 
-
 export default function DeletePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const { pages, remove_page_by_index, addParagraph,addParagraphs, removeParagraph } = usePages();
+  const { pages, remove_page_by_index, status} = usePages();
   const {toast} = useToast()
 
     async function getClientSideSession() {
@@ -29,8 +28,8 @@ export default function DeletePage() {
           if (!session) {
             router.replace("/admin/login")
             return null
-          }else{
-              setLoading(false);
+          } else {
+            setLoading(false);
           }
         })
     }, []);
@@ -52,7 +51,7 @@ export default function DeletePage() {
                             })
                         }
                     })
-                }else{
+                } else{
                     setLoading(false);
                 }
             }
@@ -60,7 +59,7 @@ export default function DeletePage() {
     };
 
 
-    if (loading) {
+    if (loading || status == 'loading') {
       return <Loader />;
     }
 
