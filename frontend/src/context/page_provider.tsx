@@ -24,15 +24,19 @@ export type Page = {
 
 type PagesContextType = {
     pages: Page[];
+    status: Status;
     addPage: (page: Page,token:string,files: FileStringTuple[]) => Promise<number>;
     addParagraph: (newParagraph: Paragraph, idPage: string) => void;
     removeParagraph: (index: number, idPage: string) => void
     addParagraphs: (newParagraphs: Paragraph[], idPage: string) => void;
     remove_page_by_index: (token:string,index: number) => Promise<number>;
 };
+type Status = "active" | "loading" | "inactive";
+
 
 const defaultPagesContext: PagesContextType = {
     pages: [],
+    status: "inactive",
     addPage: async  () => {return 1},
     addParagraph: () => {},
     removeParagraph:   () => {},
@@ -46,10 +50,13 @@ const PagesContext = createContext<PagesContextType>(defaultPagesContext);
 export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
 
     const [pages, setPages] = useState<Page[]>([]);
+    const [status, setStatus] = useState<Status>("inactive");
 
     useEffect(() => {
+        setStatus("loading")
         get_pages().then(fetchedPages => {
             setPages(fetchedPages);
+            setStatus("active")
         }).catch(error => console.error("Error fetching pages:", error));
     }, []);
 
@@ -69,13 +76,13 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
             const result_code_upload = await upload_image(token, files);
 
             if (result_code !== 200 || result_code_upload !== 200) {
-                return 300; // Restituisci un codice di errore generico
+                return 300;
             } else {
-                return 200; // Restituisci un codice di successo
+                return 200;
             }
         } catch (error) {
             console.error("Errore durante l'aggiunta della pagina:", error);
-            return 300; // Restituisci un codice di errore generico
+            return 300;
         }
     };
 
@@ -121,7 +128,7 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <PagesContext.Provider value={{ pages, addPage,remove_page_by_index, addParagraph, removeParagraph, addParagraphs }}>
+        <PagesContext.Provider value={{ pages, addPage,remove_page_by_index, addParagraph, removeParagraph, addParagraphs, status}}>
             {children}
         </PagesContext.Provider>
             );
