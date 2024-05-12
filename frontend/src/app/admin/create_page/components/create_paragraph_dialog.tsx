@@ -83,40 +83,31 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
 
         let picture = formData.get("picture");
 
-
         // @ts-ignore
         if(selectedLayout === '' || selectedLayout === null) {
             toast({
                 variant:"destructive",
                 title: "Errore nel form",
-                description: "Ricordati di inserire l'immagine prima di salvare",
+                description: "Ricordati di inserire il layout prima di salvare",
             })
             return
         }
 
         if (picture instanceof File) {
-            if (picture.name !== '' && (selectedLayout.value === "1" || selectedLayout.value === "2" || selectedLayout.value === "4" || selectedLayout.value === "5")) {
+            if (selectedLayout.value !== "3") {
                 //@ts-ignore
-                if (checkPicture(picture)) {
+                if (checkPicture(picture) && picture.name !== '') {
                         props.handleImage([picture, picture.name])
                 } else {
                     toast({
                         variant: "destructive",
                         title: "Errore nella immagine",
-                        description: "Immagine non è di un formato valido oppure è troppo grande",
+                        description: "Immagine non è di un formato valido,è troppo grande o non è stata inserita",
                     })
+                    return
                 }
-            } else {
-                toast({
-                    variant: "destructive",
-                    title: "Errore nella immagine",
-                    description: "Immagine non è di un formato valido oppure è troppo grande",
-                })
-                return
             }
         }
-
-
 
 
         if((formData.get("paragrah_title") === null || formData.get("paragrah_title") === '')  && (selectedLayout.value === "1" || selectedLayout.value === "3" || selectedLayout.value === "4")){
