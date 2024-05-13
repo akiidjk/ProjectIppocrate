@@ -3,7 +3,7 @@ Report condition:
 
 max: 1000 users
 
-- Docker
+- Docker (cargo install )
 - With all logs and not optimised
 - Installed with cargo install
 
