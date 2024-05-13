@@ -493,7 +493,6 @@ dependencies = [
  "jwt",
  "log",
  "mime",
- "rand 0.8.5",
  "redis",
  "regex",
  "serde",
