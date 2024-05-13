@@ -8,7 +8,7 @@ use crate::error_manager::ErrorManager;
 use crate::model::{Admin, Page};
 use uuid::Uuid;
 use crate::data::PASSWORD_ADMIN;
-use log::debug;
+
 // * --------------------------- MACRO ----------------------------
 
 #[macro_export]
@@ -50,13 +50,13 @@ macro_rules! remove_redis_value {
 }
 
 // * ---------------------------- CREATION ---------------------------------
-pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
-    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
-
-    set_redis_value!(conn, key, value);
-
-    Ok(true)
-}
+// pub async fn create_string(redis_pool: Data<Pool>, key: &str, value: &str) -> Result<bool, ErrorManager> {
+//     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
+//
+//     set_redis_value!(conn, key, value);
+//
+//     Ok(true)
+// }
 
 pub async fn create_image(redis_pool: Data<Pool>, key: &str, value: Vec<u8>) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
@@ -80,7 +80,7 @@ pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Resul
 fn generate_html(page_data: &mut Page) -> () {
 
     for paragraph in page_data.page.paragraphs.iter_mut() {
-        println!("layout type: {}", paragraph.layout_type);
+
         let mut title_attributes: String = "lg:text-[54px] sm:text-[34px] font-bold mb-".to_string();
         let mut image_classnames: String = String::new();
         match paragraph.layout_type {
@@ -96,11 +96,9 @@ fn generate_html(page_data: &mut Page) -> () {
                 title_attributes += "10 text-center";
             }
         }
-        println!("INFO: images: ");
 
         for s in paragraph.image_sources.iter_mut() {
             *s = format!("<Image width={{1070}} height={{570}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
-            println!("{}", *s);
         }
 
         paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
@@ -118,12 +116,12 @@ pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorMana
 
 // * ---------------------------- GET ---------------------------------
 
-pub async fn get_string(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
-    let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
-
-    let value: String = get_redis_value!(conn, key);
-    Ok(value)
-}
+// pub async fn get_string(redis_pool: Data<Pool>, key: &str) -> Result<String, ErrorManager> {
+//     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
+//
+//     let value: String = get_redis_value!(conn, key);
+//     Ok(value)
+// }
 
 pub async fn get_image(redis_pool: Data<Pool>, key: &str) -> Result<Vec<u8>, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
@@ -159,7 +157,7 @@ pub async fn get_keys(redis_pool: Data<Pool>) -> Result<Vec<String>, ErrorManage
     keys.retain(|x| {
         x != "auth/admin" && !x.contains("image-")
     });
-    debug!("Keys valid {:?}",keys);
+    
     Ok(keys)
 }
 

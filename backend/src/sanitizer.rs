@@ -44,7 +44,7 @@ pub fn sanitize_string(input: &str, options: SanitizeOptions) -> String {
 
 
 pub fn sanitize_page(page: &Page) -> Page {
-    let mut sanitized_page = page.clone(); // Cloniamo la struttura originale
+    let mut sanitized_page = page.clone();
 
     let options_high: SanitizeOptions = SanitizeOptions {
         remove_html_tags: true,

@@ -7,7 +7,7 @@ mod sanitizer;
 
 use actix_cors::Cors;
 use std::process::exit;
-use actix_multipart::Multipart;
+use actix_multipart::{Field, Multipart};
 use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post, http, HttpRequest};
 use actix_web::http::header::CONTENT_LENGTH;
 use actix_web::middleware::Logger;
@@ -28,7 +28,6 @@ use crate::sanitizer::{sanitize_page, SanitizeOptions};
 
 #[get("/")]
 async fn hello() -> impl Responder {
-    info!("Handling request for /hello endpoint");
     HttpResponse::Ok().body("Server online!")
 }
 
@@ -40,55 +39,73 @@ const BASE_OPTION: SanitizeOptions = SanitizeOptions{
     convert_to_lowercase: true,
 };
 
-#[post("/admin/upload_image")]
-async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRequest) -> HttpResponse {
-    let max_file_size = 5_000_000;
-    let max_file_count = 5;
+
+fn check_file(field: &Field) -> u32 {
     let legal_filetype: [Mime; 2] = [IMAGE_JPEG,IMAGE_PNG];
 
+    let filetype: Option<&Mime> = field.content_type();
+    if filetype.is_none() { return 501}
+    if !legal_filetype.contains(&filetype.unwrap()) { return 502 }
+
+    return 200
+
+}
+
+fn get_content_lenght(req:HttpRequest) -> usize {
     let content_lenght: usize = match req.headers().get(CONTENT_LENGTH) {
         Some(hv) => hv.to_str().unwrap_or("0").parse().unwrap(),
         None => 0,
     };
 
-    if content_lenght == 0 || content_lenght > max_file_size {return HttpResponse::BadRequest().into();}
-
-    let mut current_count: usize = 0;
-    loop {
-        
-        if current_count >= max_file_count {break}
-
-        if let Ok(Some(mut field)) = payload.try_next().await {
-            let filetype: Option<&Mime> = field.content_type();
-            if filetype.is_none() { return HttpResponse::BadRequest().body("File not recognized");}
-            if !legal_filetype.contains(&filetype.unwrap()) { return HttpResponse::BadRequest().body("File not supported"); }
-
-            let mut file_bytes = Vec::new();
-
-            while let Ok(Some(chunk)) = field.try_next().await {
-                let data = chunk.to_vec();
-                file_bytes.extend_from_slice(&data);
-            }
-
-            let name_cleaned  = sanitizer::sanitize_string(field.name(),BASE_OPTION);
-            let key = format!("image-{}",name_cleaned);
-
-            match redis::create_image(redis_pool.clone(), &key , file_bytes).await {
-                Ok(_) => {
-                    current_count += 1;
-                }
-                Err(_) => {
-                    return HttpResponse::InternalServerError().body("Error with the storage of image");
-                }
-            }
-        } else {
-            break;
-        }
-    }
-
-    HttpResponse::Ok().finish()
+    content_lenght
 }
 
+#[post("/admin/upload_image")]
+async fn upload_image(redis_pool: Data<Pool>,mut payload: Multipart, req: HttpRequest) -> HttpResponse {
+    let max_file_size = 5_000_000;
+    let max_file_count = 5;
+
+    let content_lenght = get_content_lenght(req);
+
+    if content_lenght == 0 || content_lenght > max_file_size { return HttpResponse::BadRequest().into(); }
+
+    let mut current_count: usize = 0;
+
+
+    loop {
+        if current_count >= max_file_count { break }
+
+        if let Ok(Some(mut field)) = payload.try_next().await {
+            let result_check = check_file(&field);
+
+            if result_check == 501 { return HttpResponse::BadRequest().body("File not recognized"); }
+            else if result_check == 502 {return HttpResponse::BadRequest().body("File not supported");}
+
+                let mut file_bytes = Vec::new();
+
+                while let Ok(Some(chunk)) = field.try_next().await {
+                    let data = chunk.to_vec();
+                    file_bytes.extend_from_slice(&data);
+                }
+
+                let name_cleaned = sanitizer::sanitize_string(field.name(), BASE_OPTION);
+                let key = format!("image-{}", name_cleaned);
+
+                match redis::create_image(redis_pool.clone(), &key, file_bytes).await {
+                    Ok(_) => {
+                        current_count += 1;
+                    }
+                    Err(_) => {
+                        return HttpResponse::InternalServerError().body("Error with the storage of image");
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+
+        return HttpResponse::Ok().finish();
+}
 
 #[get("/api/get_image/{name}")]
 async fn get_image(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
@@ -114,7 +131,6 @@ async fn get_image(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<H
 async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
     let name_cleaned  = sanitizer::sanitize_string(name.as_str(),BASE_OPTION);
-    info!("INFO: Handling /get_page, \"{}\" was requested", name_cleaned);
     let result = redis::get_page(redis_pool, &name_cleaned).await?;
     Ok(HttpResponse::Ok().json(result))
 }
@@ -123,8 +139,7 @@ async fn get_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<Ht
 async fn remove_page(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<HttpResponse, actix_web::Error> {
     let name = route.into_inner();
     let name_cleaned  = sanitizer::sanitize_string(name.as_str(),BASE_OPTION);
-    info!("INFO: Handling /get_page, \"{}\" was requested", name_cleaned);
-    redis::remove(redis_pool, &name).await?;
+    redis::remove(redis_pool, &name_cleaned).await?;
     Ok(HttpResponse::Ok().json({}))
 }
 
@@ -145,7 +160,6 @@ async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaim
     match req_user {
         Some(_user) => {
             let page: Page = sanitize_page(&body.into_inner());
-            info!("{:?}",page);
             if redis::create_page(redis_pool, &page.id.clone(), page).await.unwrap() {
                 HttpResponse::Ok().json("Page created")
             } else {
@@ -219,3 +233,4 @@ async fn main() -> std::io::Result<()> {
         .run()
         .await
 }
+

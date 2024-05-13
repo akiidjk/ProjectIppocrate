@@ -1,6 +1,5 @@
 use deadpool_redis::redis::cmd;
 use actix_web::{dev::ServiceRequest, error::Error, web::{Data}, HttpMessage, get, Responder, HttpResponse};
-
 use actix_web_httpauth::{
     extractors::{
         bearer::{self, BearerAuth},
