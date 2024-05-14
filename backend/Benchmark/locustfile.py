@@ -1,7 +1,5 @@
 from locust import HttpUser, between, task
 import random
-import string
-import uuid
 from faker import Faker
 
 import json
