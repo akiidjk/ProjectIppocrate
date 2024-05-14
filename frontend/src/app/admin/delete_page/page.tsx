@@ -32,7 +32,7 @@ export default function DeletePage() {
             setLoading(false);
           }
         })
-    }, []);
+    }, [router]);
 
     const removePageByIndex = (index: number) => {
         getClientSideSession().then(session => {

@@ -46,7 +46,7 @@ export default function CreateAdminPage() {
             setToken(session?.user?.name ?? 'session not found');
         }
         fetchSession();
-    }, []);
+    }, [router]);
 
     const [localPage, setLocalPage] = useState({
         id: '',
@@ -140,7 +140,7 @@ export default function CreateAdminPage() {
                 setLoading(false);
             }
           })
-      }, []);
+      }, [router]);
 
       if (loading) {
         return <Loader />;

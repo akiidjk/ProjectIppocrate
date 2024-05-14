@@ -33,7 +33,7 @@ export default function Dashboard(){
                 setLoading(false);
             }
           })
-      }, []);
+      }, [router]);
     
       if (loading) {
         return <Loader />;
