@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "cross-env ANALYZE=false next dev",
+    "build": "cross-env ANALYZE=false  next build",
+    "start": "cross-env ANALYZE=false next start",
+    "lint": "cross-env ANALYZE=false next lint",
+    "build:analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@next/bundle-analyzer": "^14.2.3",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.0.7",
@@ -37,6 +39,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.3",
     "react-resizable-panels": "^2.0.19",
+    "sharp": "^0.33.3",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.163.0",
@@ -48,6 +51,7 @@
     "@types/node": "^20",
     "@types/react": "18.2.79",
     "@types/react-dom": "^18",
+    "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.1",
     "postcss": "^8",
