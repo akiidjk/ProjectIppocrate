@@ -1,10 +1,6 @@
 import {
     Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
     CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
 
 interface Props {
@@ -21,18 +17,24 @@ import {
 import { Info, Trash2 } from 'lucide-react';
 import {Button} from "@/components/ui/button";
 import {Paragraph} from "@/context/page_provider";
-import {Label} from "@/components/ui/label";
 
 
 const MAX_LENGHT_HOVER = 40
-const MAX_LENGHT_TITLE = 10
+const MAX_LENGHT_TITLE = 20
 export default  function ElementParagraph(props:Props){
     return (
         <div className="m-4">
             <Card className="h-[80px]">
                 <CardHeader>
                     <div className="flex justify-between">
-                    <h1 className="text-[18px] mt-1">{props.data.title.length > MAX_LENGHT_TITLE ? props.data.title.slice(0,MAX_LENGHT_TITLE) + '...' : props.data.title}</h1>
+                    <h1 className="text-[18px] mt-1">
+                        {
+                            props.data.title != '' ?
+                            
+                            props.data.title.length > MAX_LENGHT_TITLE ? props.data.title.slice(0,MAX_LENGHT_TITLE) + '...' : props.data.title : 'Titolo non definito' 
+                            
+                            }
+                    </h1>
                         <div className="flex">
                             <Button onClick={() => {
                                 props.delete(props.index)
