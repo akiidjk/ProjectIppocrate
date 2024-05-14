@@ -161,7 +161,7 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
                                 <div>
                                     {/*@ts-ignore*/}
                                     <Label htmlFor="paragrah_title">Titolo paragrafo {selectedLayout.value === "2" || selectedLayout.value === "5"  ? '*' : ''}</Label>
-                                    <Input maxLength={40} type="text" name="paragrah_title" id="paragrah_title"
+                                    <Input maxLength={100} type="text" name="paragrah_title" id="paragrah_title"
                                            placeholder="Lo svillupo del benessere"/>
                                 </div>
                                 <div>
