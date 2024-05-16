@@ -6,7 +6,6 @@ mod auth;
 mod sanitizer;
 
 use actix_cors::Cors;
-use actix_cors::Cors;
 use std::process::exit;
 use actix_multipart::{Field, Multipart};
 use actix_web::{get, App, HttpResponse, HttpServer, Responder, web, post, http, HttpRequest};
@@ -21,9 +20,7 @@ use crate::data::URL_REDIS;
 use mime::{Mime,IMAGE_JPEG,IMAGE_PNG};
 use futures_util::TryStreamExt  as _;
 use image::ImageFormat;
-use mime::{Mime,IMAGE_JPEG,IMAGE_PNG};
 use futures_util::TryStreamExt  as _;
-use image::ImageFormat;
 use actix_web_httpauth::{
     middleware::HttpAuthentication,
 };
@@ -125,9 +122,6 @@ async fn get_image(redis_pool: Data<Pool>, route: web::Path<String>) -> Result<H
         Err(_) => "application/octet-stream",
     };
 
-    Ok(HttpResponse::Ok()
-        .content_type(content_type)
-        .body(actix_web::web::Bytes::from(image_bytes)))
 
     Ok(HttpResponse::Ok()
         .content_type(content_type)
@@ -164,7 +158,6 @@ async fn get_keys(redis_pool: Data<Pool>) -> Result<HttpResponse, actix_web::Err
 }
 
 #[post("/admin/create_page")]
-async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<Page>) -> impl Responder {
 async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaims>>, body: Json<Page>) -> impl Responder {
     match req_user {
         Some(_user) => {
@@ -220,12 +213,6 @@ async fn main() -> std::io::Result<()> {
             .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
             .allowed_header(http::header::CONTENT_TYPE)
             .max_age(3600);
-        let cors = Cors::default()
-            .allowed_origin("http://localhost:3000")
-            .allowed_methods(vec!["GET", "POST"])
-            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600);
         App::new()
             .app_data(pool_data_clone.clone())
             .service(hello)
@@ -239,8 +226,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_image)
             .wrap(Logger::default())
             .wrap(cors)
-            .wrap(cors)
-            .service( 
+            .service(
                 web::scope("")
                     .wrap(bearer_middleware)
                     .service(create_page)

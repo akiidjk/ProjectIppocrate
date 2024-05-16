@@ -1,8 +1,6 @@
 "use client"
 
 import { getSession } from "next-auth/react";
-
-import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {useEffect, useRef, useState} from "react";
 
@@ -151,51 +149,6 @@ export default function CreateAdminPage() {
 
     return (
         <div>
-            <Navbar/>
-            <div>
-                <ResizablePanelGroup direction="horizontal">
-                    {
-                        isFull ?
-                            <ResizablePanel defaultSize={0} minSize={0} ref={resizeNull}></ResizablePanel>
-                            :
-                            <ResizablePanel defaultSize={30} minSize={20}>
-                                <div className="m-7 flex ">
-                                    <h1 className="ms-auto me-auto text-4xl font-semibold">
-                                        Form
-                                    </h1>
-                                </div>
-                                <div>
-                                    <Form deleteParagraph={deleteParagraph} handleParagraph={handleParagraph} localPage={localPage} savePage={savePage} handleImage={handleImage}/>
-                                </div>
-                            </ResizablePanel>
-                    }
-                    <ResizableHandle/>
-                    <ResizablePanel defaultSize={70} minSize={65}>
-                        <div
-                            className="w-full dark:bg-black bg-white  dark:bg-dot-white/[0.2] bg-dot-black/[0.2]">
-                            <div className="relative flex top-2 left-2">
-                                <Button className="mr-3" onClick={() => setIsFull(!isFull)} size="icon">
-                                    <Expand color={"#ffffff"} size={"30px"}/>
-                                </Button>
-                                <Button onClick={() => rebuildComponent()} size="icon">
-                                    <RefreshCcw className="stroke-white size-[30px]"/>
-                                </Button>
-                            </div>
-                            <div className="flex">
-                                <h1 className="ms-auto me-auto text-4xl mt-7 font-semibold">
-                                    Anteprima della pagina
-                                </h1>
-                            </div>
-                            <div className="h-[81vh] flex items-center justify-center">
-                                {/*<h1 className="font-medium text-3xl">Content Preview</h1>*/}
-                                <ScrollArea className="h-[80%]">
-                                    <PreviewPage key={key} localPage={localPage}/>
-                                </ScrollArea>
-                            </div>
-                        </div>
-                    </ResizablePanel>
-                </ResizablePanelGroup>
-            </div>
             <Navbar/>
             <div>
                 <ResizablePanelGroup direction="horizontal">

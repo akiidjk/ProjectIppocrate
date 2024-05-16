@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import {Label} from "@/components/ui/label";
 import QuestionMark from "@/app/admin/create_page/components/svg/question_mark";
-import { Progress } from "@/components/ui/progress"
+
 import {
     Tooltip,
     TooltipContent,

@@ -6,7 +6,6 @@ use deadpool_redis::redis::cmd;
 use crate::auth::create_user;
 use crate::error_manager::ErrorManager;
 use crate::model::{Admin, Page};
-use crate::model::{Admin, Page};
 use uuid::Uuid;
 use crate::data::PASSWORD_ADMIN;
 
@@ -17,18 +16,8 @@ macro_rules! set_redis_value {
     ($conn:expr, $key:expr, $value:expr) => {
         cmd("SET")
             .arg(&[$key, $value])
-            .arg(&[$key, $value])
             .query_async::<_, ()>(&mut $conn)
             .await?
-    };
-}
-
-macro_rules! set_redis_image {
-    ($conn:expr, $key:expr, $value:expr) => {
-        let _: () = redis::cmd("SET")
-        .arg($key)
-        .arg($value)
-        .query_async(&mut $conn).await?;
     };
 }
 
@@ -89,9 +78,7 @@ pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Resul
 
 
 fn generate_html(page_data: &mut Page) -> () {
-
     for paragraph in page_data.page.paragraphs.iter_mut() {
-
         let mut title_attributes: String = "lg:text-[54px] sm:text-[34px] font-bold mb-".to_string();
         let mut image_classnames: String = String::new();
         match paragraph.layout_type {
@@ -99,7 +86,7 @@ fn generate_html(page_data: &mut Page) -> () {
                 title_attributes += "4";
                 image_classnames = "rounded-2xl".to_string();
             }
-            2 => {
+
             2 => {
                 title_attributes += "4";
                 image_classnames = "me-auto ms-auto rounded-full".to_string();
@@ -108,17 +95,17 @@ fn generate_html(page_data: &mut Page) -> () {
                 title_attributes += "10 text-center";
             }
         }
+            for s in paragraph.image_sources.iter_mut() {
+                *s = format!("<Image width={{960}} height={{570}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
+            }
 
-        for s in paragraph.image_sources.iter_mut() {
-            *s = format!("<Image width={{960}} height={{570}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
+            paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
+
+            paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
+            paragraph.content = format!("<p>{}</p>", paragraph.content);
         }
-
-        paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
-
-        paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
-        paragraph.content = format!("<p>{}</p>", paragraph.content);
-    }
 }
+
 
 
 
