@@ -205,6 +205,7 @@ async fn main() -> std::io::Result<()> {
     redis::init_admin(pool_data).await.unwrap();
 
     let port = env::var("PORT").unwrap_or_else(|_| 8000);
+    let port = port.parse::<u16>().expect("Invalid port given");
 
     HttpServer::new(move || {
         let bearer_middleware = HttpAuthentication::bearer(validator);
