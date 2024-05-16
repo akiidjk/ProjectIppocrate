@@ -16,15 +16,15 @@ services:
       redis:
         condition: service_healthy
 
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - BACKEND_URL=http://backend:8080
-  #   depends_on:
-  #     redis:
-  #       condition: service_healthy
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_URL=http://backend:8080
+    depends_on:
+      redis:
+        condition: service_healthy
 
   redis:
       image: "redis:alpine"
@@ -35,8 +35,8 @@ services:
         - redis-data:/data
       healthcheck:
         test: ["CMD", "redis-cli", "ping"]
-        interval: 10s
-        timeout: 5s
+        interval: 3s
+        timeout: 2s
         retries: 5
 
 volumes:
