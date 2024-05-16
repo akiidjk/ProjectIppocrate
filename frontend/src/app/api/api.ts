@@ -2,7 +2,7 @@ import {Page} from "@/context/page_provider";
 
 // const BASE_ENDPOINT = "http://localhost:8000";
 // const BASE_ENDPOINT = "http://backend:8000
-const BASE_ENDPOINT = "https://backend.railway.internal";
+const BASE_ENDPOINT = "https://backend-production-99ba.up.railway.app";
 
 export type FileStringTuple = [File, string];
 
