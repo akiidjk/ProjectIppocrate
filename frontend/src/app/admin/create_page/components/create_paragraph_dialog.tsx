@@ -27,9 +27,11 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { BASE_ENDPOINT } from "@/app/api/api"
+
 import { useToast } from "@/components/ui/use-toast"
 
-const PATH_IMAGE = "http://localhost:8000/api/get_image/"
+const PATH_IMAGE = BASE_ENDPOINT + "/api/get_image/"
 
 interface CreateParagraphDialogProps {
     handle: Function
