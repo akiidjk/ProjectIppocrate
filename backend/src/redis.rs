@@ -6,6 +6,7 @@ use deadpool_redis::redis::cmd;
 use crate::auth::create_user;
 use crate::error_manager::ErrorManager;
 use crate::model::{Admin, Page};
+use crate::model::{Admin, Page};
 use uuid::Uuid;
 use crate::data::PASSWORD_ADMIN;
 
@@ -16,8 +17,18 @@ macro_rules! set_redis_value {
     ($conn:expr, $key:expr, $value:expr) => {
         cmd("SET")
             .arg(&[$key, $value])
+            .arg(&[$key, $value])
             .query_async::<_, ()>(&mut $conn)
             .await?
+    };
+}
+
+macro_rules! set_redis_image {
+    ($conn:expr, $key:expr, $value:expr) => {
+        let _: () = redis::cmd("SET")
+        .arg($key)
+        .arg($value)
+        .query_async(&mut $conn).await?;
     };
 }
 
@@ -89,6 +100,7 @@ fn generate_html(page_data: &mut Page) -> () {
                 image_classnames = "rounded-2xl".to_string();
             }
             2 => {
+            2 => {
                 title_attributes += "4";
                 image_classnames = "me-auto ms-auto rounded-full".to_string();
             }
@@ -102,13 +114,17 @@ fn generate_html(page_data: &mut Page) -> () {
         }
 
         paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
+
+        paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
         paragraph.content = format!("<p>{}</p>", paragraph.content);
     }
 }
 
 
+
 pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
+    remove_redis_value!(conn, key);
     remove_redis_value!(conn, key);
     Ok(true)
 }
@@ -204,4 +220,6 @@ pub async fn get_admin(redis_pool: Data<Pool>) -> Result<Admin, ErrorManager> {
 
     Ok(model)
 }
+
+
 

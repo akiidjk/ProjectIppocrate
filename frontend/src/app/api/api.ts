@@ -20,6 +20,9 @@ export async function getAuth(credentials:Record<"username" | "password", string
             name: "",
             password: "",
             id:"",
+            name: "",
+            password: "",
+            id:"",
             token: await res.json(),
         },
         success: res.ok
