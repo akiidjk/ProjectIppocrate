@@ -1,7 +1,8 @@
 import {Page} from "@/context/page_provider";
 
 // const BASE_ENDPOINT = "http://localhost:8000";
-const BASE_ENDPOINT = "http://backend:8000";
+// const BASE_ENDPOINT = "http://backend:8000
+const BASE_ENDPOINT = "http://backend";
 
 export type FileStringTuple = [File, string];
 

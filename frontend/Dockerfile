@@ -49,8 +49,5 @@ RUN chown -R nextjs:bun /app/.next /app/node_modules
 # Switch to the non-root user
 USER nextjs
 
-# Expose the port the app runs on
-EXPOSE 3000
-
 # Command to run the application
-CMD ["bun", "start", "--", "-H", "0.0.0.0"]
+CMD ["bun", "start", "--", "-H", "0.0.0.0","-p $PORT"]
