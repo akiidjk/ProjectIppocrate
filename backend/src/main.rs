@@ -20,7 +20,6 @@ use crate::data::URL_REDIS;
 use mime::{Mime,IMAGE_JPEG,IMAGE_PNG};
 use futures_util::TryStreamExt  as _;
 use image::ImageFormat;
-use futures_util::TryStreamExt  as _;
 use actix_web_httpauth::{
     middleware::HttpAuthentication,
 };
