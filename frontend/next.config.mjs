@@ -16,6 +16,12 @@
                 hostname: 'backend',
                 port: '',
                 pathname: '/**',
+            },
+            {
+              protocol: 'https',
+              hostname: 'backend',
+              port: '',
+              pathname: '/**',
             }
             ],
     },
