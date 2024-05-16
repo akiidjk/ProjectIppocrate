@@ -19,7 +19,7 @@
             },
             {
               protocol: 'https',
-              hostname: 'backend',
+              hostname: 'backend.railway.internal',
               port: '',
               pathname: '/**',
             }
