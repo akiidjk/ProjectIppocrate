@@ -4,7 +4,7 @@ mod redis;
 mod error_manager;
 mod auth;
 mod sanitizer;
-
+use std::env;
 use actix_cors::Cors;
 use std::process::exit;
 use actix_multipart::{Field, Multipart};
