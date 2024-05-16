@@ -3,9 +3,7 @@ import {Page} from "@/context/page_provider";
 // const BASE_ENDPOINT = "http://localhost:8000";
 const BASE_ENDPOINT = "http://backend:8000";
 
-
 export type FileStringTuple = [File, string];
-
 
 export async function getAuth(credentials:Record<"username" | "password", string> | undefined){
     let headers = {
@@ -22,19 +20,20 @@ export async function getAuth(credentials:Record<"username" | "password", string
             name: "",
             password: "",
             id:"",
+            name: "",
+            password: "",
+            id:"",
             token: await res.json(),
         },
         success: res.ok
     }
 }
 
-export async function create_page(token:string,page:Page){
+export async function create_page(token:string,page:Page): Promise<number>{
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
-
-    console.log(myHeaders.get("Authorization"));
 
     const requestOptions: RequestInit = {
         method: "POST",
@@ -43,14 +42,13 @@ export async function create_page(token:string,page:Page){
         redirect: "follow"
     };
 
-    console.log(requestOptions);
-
-    fetch("http://localhost:8000/admin/create_page",
-        requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
-
+    try {
+        const response = await fetch(BASE_ENDPOINT + `/admin/create_page`, requestOptions);
+        return response.status;
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
 }
 
 
@@ -61,10 +59,17 @@ export async function get_page(id_pages:string){
         redirect: "follow"
     };
 
-    fetch(`http://localhost:8000/api/get_page/${id_pages}`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
+    try {
+        const response = await fetch(BASE_ENDPOINT + `/api/get_page/${id_pages}`, requestOptions);
+        if(response.status == 200){
+            return response.json()
+        }else {
+            return response.status;
+        }
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
 
 }
 
@@ -77,31 +82,40 @@ export async function get_pages(){
     };
 
     try {
-        const response = await fetch(`http://localhost:8000/api/get_pages`, requestOptions);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(BASE_ENDPOINT + "/api/get_pages", requestOptions);
+
+        if(response.status == 200){
+            return response.json()
+        }else {
+            return response.status;
         }
-        return await response.json();
+
     } catch (error) {
         console.error(error);
-        throw error;
+        return -1;
     }
 
 }
 
 
-export async function get_keys(){;
+export async function get_keys(){
 
     const requestOptions: RequestInit = {
         method: "GET",
         redirect: "follow"
     };
 
-    fetch(`http://localhost:8000/admin/get_keys`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
-
+    try {
+        const response = await fetch(BASE_ENDPOINT + "/admin/get_keys", requestOptions);
+        if(response.status == 200){
+            return response.json()
+        }else {
+            return response.status;
+        }
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
 }
 
 
@@ -111,29 +125,29 @@ export async function remove_page(token:string,page_name:string){
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
-    console.log(myHeaders.get("Authorization"));
-
     const requestOptions: RequestInit = {
         method: "POST",
         headers: myHeaders,
         redirect: "follow"
     };
 
-    fetch(`http://localhost:8000/admin/remove_page/${page_name}`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
+    try {
+        const response = await fetch(BASE_ENDPOINT + `/admin/remove_page/${page_name}`, requestOptions);
+        return response.status;
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
 
 }
 
-export async function upload_image(token:string, images:FileStringTuple[]){
+export async function upload_image(token:string, images:FileStringTuple[]): Promise<number>{
     const myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
     const formdata = new FormData();
 
     for(let i = 0;i<images.length;i++){
         formdata.append(images[i][1], images[i][0], "-.jpg");
-    
     }
 
     const requestOptions: RequestInit = {
@@ -142,11 +156,12 @@ export async function upload_image(token:string, images:FileStringTuple[]){
         body: formdata,
         redirect: "follow"
       };
-      
-      fetch("http://localhost:8000/admin/upload_image", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
-    
-   
+
+    try {
+        const response = await fetch(BASE_ENDPOINT + "/admin/upload_image", requestOptions);
+        return response.status;
+    } catch (error) {
+        console.error(error);
+        return -1;
+    }
 }

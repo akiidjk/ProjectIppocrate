@@ -5,11 +5,13 @@ import Navbar from "@/app/components/navbar";
 import Loader from "@/app/components/loader";
 import {cn} from "@/utils/cn";
 import { Inter } from "next/font/google";
+import NotFound from "@/app/not-found";
 
 const inter = Inter({ subsets: ["latin"] });
 export default function PageTemplate({ params }: { params: { pageId: string }; }) {
     const { pages } = usePages();
     const [pageTarget, setPageTarget] = useState<Page | null>(null);
+    const [notFound, setNotFound] = useState<boolean>(false);
 
     useEffect(() => {
         const foundPage = pages.find(page => page.id === params.pageId);
@@ -17,14 +19,24 @@ export default function PageTemplate({ params }: { params: { pageId: string }; }
         if (foundPage) {
             setPageTarget(foundPage);
             document.title = foundPage.page.title;
+            setNotFound(false)
+        } else{
+            setNotFound(true)
         }
+
     }, [pages, params.pageId]);
+    
+    
+
+    if(notFound){
+        return <NotFound />
+    }
 
     if (!pages || pages.length === 0 || !pageTarget) {
         return <Loader />;
     }
 
-    console.log(pageTarget.page.paragraphs)
+
 
     return (
         <div>
@@ -34,11 +46,16 @@ export default function PageTemplate({ params }: { params: { pageId: string }; }
                     {pageTarget.page.title}
                 </h1>
             </div>
-            {
-                pageTarget.page.paragraphs.map((paragraph, index) => {
-                    return get_paragraf(paragraph.layout_type,paragraph.title,paragraph.content,paragraph.image_sources[0],index)
-                })
-            }
+
+            <div className="flex">
+                <div className="w-[95%] ms-auto me-auto">
+                    {
+                        pageTarget.page.paragraphs.map((paragraph, index) => {
+                            return get_paragraf(paragraph.layout_type,paragraph.title,paragraph.content,paragraph.image_sources[0],index)
+                        })
+                    }
+                </div>
+            </div>
         </div>
     );
 }
@@ -50,10 +67,10 @@ function get_paragraf(layout:number,title:string,content:string,image_source:str
         case 4:
             if(layout == 1){
                 return (
-                    <div key={key}>
+                    <div key={key} className="m-20">
                         <div className="mt-20 flex">
-                            <div dangerouslySetInnerHTML={{__html: image_source}}/>
-                            <div className="w-[30%] float-right  mr-12 ml-4">
+                            <div className="items-center flex" dangerouslySetInnerHTML={{__html: image_source}}/>
+                            <div className="float-right  mr-12 ml-4">
                                 <div dangerouslySetInnerHTML={{__html: title}}/>
                                 <div dangerouslySetInnerHTML={{__html: content}}/>
                             </div>
@@ -62,13 +79,13 @@ function get_paragraf(layout:number,title:string,content:string,image_source:str
                 )
             } else {
                 return (
-                    <div key={key}>
+                    <div key={key} className="m-20">
                         <div className="mt-20 flex">
-                            <div className="w-[30%] float-right  mr-12 ml-4">
+                            <div className="float-right mr-12 ml-4">
                                 <div dangerouslySetInnerHTML={{__html: title}}/>
                                 <div dangerouslySetInnerHTML={{__html: content}}/>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: image_source}}/>
+                            <div className="items-center flex" dangerouslySetInnerHTML={{__html: image_source}}/>
                         </div>
                     </div>
                 )
@@ -78,9 +95,9 @@ function get_paragraf(layout:number,title:string,content:string,image_source:str
         case 5:
             if (layout == 2) {
                 return (
-                    <div key={key}>
+                    <div key={key} className="m-20">
                         <div className="mt-20 flex">
-                            <div className="w-[70%] float-right  ml-12 mr-4">
+                            <div className="w-[70%] float-right  ml-4 mr-4">
                                 <div dangerouslySetInnerHTML={{__html: content}}/>
                             </div>
                             <div dangerouslySetInnerHTML={{__html: image_source}}/>
@@ -89,11 +106,11 @@ function get_paragraf(layout:number,title:string,content:string,image_source:str
                 )
             } else {
                 return (
-                    <div key={key}>
+                    <div key={key} className="m-20">
                         <div className="mt-20 flex">
                             <div dangerouslySetInnerHTML={{__html: image_source}}/>
 
-                            <div className="w-[70%] float-right  ml-12 mr-4">
+                            <div className="w-[70%] float-right  ml-4 mr-4">
                                 <div dangerouslySetInnerHTML={{__html: content}}/>
                             </div>
                         </div>
@@ -102,8 +119,8 @@ function get_paragraf(layout:number,title:string,content:string,image_source:str
             }
         case 3:
             return (
-                <div key={key}>
-                    <div className="flex m-28">
+                <div key={key} className="m-20">
+                    <div className="flex">
                         <div className="ms-auto me-auto">
                             <div dangerouslySetInnerHTML={{__html: title}}/>
                             <div dangerouslySetInnerHTML={{__html: content}}/>

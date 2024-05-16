@@ -36,10 +36,7 @@ export default function MainTitle(){
           <TypewriterEffectSmooth words={words} cursorClassName="bg-[#4e69c3] xl:h-[70px]" />
         </div>
         <p className="mt-4 font-normal max-w-lg text-center mx-auto ">
-          Spotlight effect is a great way to draw attention to a specific part
-          of the page. Here, we are drawing the attention towards the text
-          section of the page. I don&apos;t know why but I&apos;m running out of
-          copy.
+          L&apos;Agenda 2030 per lo Sviluppo Sostenibile è un piano d&apos;azione globale adottato dai membri delle Nazioni Unite nel settembre 2015.
         </p>
       </div>
     </div>

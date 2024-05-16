@@ -1,9 +1,29 @@
 /** @type {import('next').NextConfig} */
 
-const nextConfig = {
-    images: {
-        domains: ["localhost:8000","backend"]
-    }
-};
+  import withBundleAnalyzer from '@next/bundle-analyzer';
 
-export default nextConfig;
+  const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'http',
+                hostname: 'localhost:8000',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'http',
+                hostname: 'backend',
+                port: '',
+                pathname: '/**',
+            }
+            ],
+    },
+    reactStrictMode: true,
+  };
+  
+  const bundleAnalyzer = withBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true',
+  });
+  
+  export default process.env.ANALYZE === 'true' ? bundleAnalyzer(nextConfig) : nextConfig;

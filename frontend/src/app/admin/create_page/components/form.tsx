@@ -29,11 +29,9 @@ interface Props {
 
 
 export default  function Form(props: Props){
-
     return (
         <div>
             {/* Input titolo pagina */}
-
             <div className="w-full flex flex-col">
                 <div className="mx-10">
                     <div className="flex">
@@ -49,11 +47,17 @@ export default  function Form(props: Props){
                             </Tooltip>
                         </TooltipProvider>
                     </div>
-                    <Input maxLength={30} onChange={(event) => {
+                    <Input
+                    maxLength={30}
+                    onChange={(event) => {
                         props.localPage.id = (event.target.value as string).trim().replace(/\s+/g, '').toLowerCase();
                         props.localPage.page.title = event.target.value;
-                        console.log(props.localPage)
-                    }} type="text" id="title" placeholder="Storia" className="mt-3"/>
+                    }}
+                    type="text"
+                    id="title"
+                    placeholder={props.localPage.page.title ? props.localPage.page.title : 'Storia'}
+                    className="mt-3"
+                    />
                 </div>
             </div>
 
