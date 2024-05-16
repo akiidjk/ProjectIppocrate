@@ -13,7 +13,6 @@ export default function PageTemplate({ params }: { params: { pageId: string } })
     const { pages,status } = usePages();
     const [pageTarget, setPageTarget] = useState<Page | null>(null);
     const [notFound, setNotFound] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
     useEffect(() => {
         if(status == "active"){
             const foundPage = pages.find(page => page.id === params.pageId);
