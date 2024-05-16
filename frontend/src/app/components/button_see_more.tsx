@@ -6,7 +6,7 @@ export default function ButtonSeeMore(){
         <div className="flex m-8 ">
             <Link href="/subject_list" className="ms-auto me-auto">
                <button className="animated-button ">
-                    More
+                    Vedi altro...
                 </button>
             </Link>
         </div>
