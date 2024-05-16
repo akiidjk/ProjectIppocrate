@@ -1,0 +1,9 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+restartPolicyType = "NEVER"
+# watchPatterns = ["/frontend/**"]
+
+# numReplicas = 2
