@@ -4,6 +4,6 @@ dockerfilePath = "Dockerfile"
 
 [deploy]
 restartPolicyType = "NEVER"
-watchPatterns = ["/frontend/**"]
+# watchPatterns = ["/frontend/**"]
 
 # numReplicas = 2
