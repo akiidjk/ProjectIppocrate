@@ -35,8 +35,8 @@ services:
         - redis-data:/data
       healthcheck:
         test: ["CMD", "redis-cli", "ping"]
-        interval: 3s
-        timeout: 2s
+        interval: 5s
+        timeout: 5s
         retries: 5
 
 volumes:
