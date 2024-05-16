@@ -204,6 +204,8 @@ async fn main() -> std::io::Result<()> {
 
     redis::init_admin(pool_data).await.unwrap();
 
+    let port = env::var("PORT").unwrap_or_else(|_| 8000);
+
     HttpServer::new(move || {
         let bearer_middleware = HttpAuthentication::bearer(validator);
         let cors = Cors::default()
@@ -235,7 +237,7 @@ async fn main() -> std::io::Result<()> {
                     .service(upload_image)
             )
     })
-        .bind(("0.0.0.0", 8000))?
+        .bind(("0.0.0.0", port))?
         .run()
         .await
 }
