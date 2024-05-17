@@ -72,8 +72,8 @@ export default function Dashboard(){
 
                     <Card className="w-[450px] h-[450px] m-20">
                     <CardHeader>
-                            <CardTitle>Rimuovi una pagina</CardTitle>
-                            <CardDescription>Premi il bottone per rimuovere una pagina esistene</CardDescription>
+                            <CardTitle>Visualizza le pagine</CardTitle>
+                            <CardDescription>Premi il bottone per visualizzare tutte le pagine create</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <ul className="list-disc m-3">
@@ -87,7 +87,7 @@ export default function Dashboard(){
                         </CardContent>
                         <CardFooter>
                             <Button onClick={() => router.push("/admin/delete_page")}>
-                                Rimuovi
+                                Visualizza o rimuovi
                             </Button>
                         </CardFooter>
                     </Card>
