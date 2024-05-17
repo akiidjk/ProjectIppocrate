@@ -174,6 +174,8 @@ async fn create_page(redis_pool: Data<Pool>, req_user: Option<ReqData<TokenClaim
 async fn main() -> std::io::Result<()> {
     // * Init logger
     env_logger::init_from_env(Env::default().default_filter_or("debug"));
+    
+    config::get_env_variable();
 
     // * Creation of redis config
     let cfg = deadpool_redis::Config::from_url(config::get_redis_url());
@@ -202,7 +204,7 @@ async fn main() -> std::io::Result<()> {
 
     redis::init_admin(pool_data).await.unwrap();
 
-    config::get_env_variable();
+    
 
     let port = config::get_port().parse::<u16>().expect("Invalid port given");
 
