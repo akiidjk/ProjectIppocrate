@@ -177,6 +177,7 @@ async fn main() -> std::io::Result<()> {
     
     config::get_env_variable();
 
+    
     // * Creation of redis config
     let cfg = deadpool_redis::Config::from_url(config::get_redis_url());
     let pool = match cfg.create_pool(Some(Runtime::Tokio1)) {
@@ -203,8 +204,6 @@ async fn main() -> std::io::Result<()> {
     let pool_data_clone = pool_data.clone();
 
     redis::init_admin(pool_data).await.unwrap();
-
-    
 
     let port = config::get_port().parse::<u16>().expect("Invalid port given");
 

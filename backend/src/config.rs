@@ -11,7 +11,7 @@ lazy_static! {
 }
 
 pub fn get_env_variable() {
-    if let Ok(val) = env::var("URL_REDIS") {
+    if let Ok(val) = env::var("REDIS_URL") {
         *REDIS_URl.write().unwrap() = val;
     }
     if let Ok(val) = env::var("JWT_SECRET") {
