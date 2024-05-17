@@ -78,10 +78,10 @@ function Layout1({ paragraph }: { paragraph: any }) {
     return (
         <div className="m-20">
             <div className="mt-20 flex">
-                <div className="items-center flex" dangerouslySetInnerHTML={{ __html: paragraph.image_sources[0] }} />
-                <div className="float-right mr-12 ml-4">
+                <div className="items-center flex float-left min-w-[60%] image-container" dangerouslySetInnerHTML={{ __html: paragraph.image_sources[0] }} />
+                <div className="float-right mr-12 ml-4 max-w-[30%]">
                     <div dangerouslySetInnerHTML={{ __html: paragraph.title }} />
-                    <div dangerouslySetInnerHTML={{ __html: paragraph.content }} />
+                    <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
             </div>
         </div>
@@ -118,11 +118,11 @@ function Layout4({ paragraph }: { paragraph: any }) {
     return (
         <div className="m-20">
             <div className="mt-20 flex">
-                <div className="float-right mr-12 ml-4">
+                <div className="float-right mr-12 ml-4 max-w-[30%]">
                     <div dangerouslySetInnerHTML={{ __html: paragraph.title }} />
-                    <div dangerouslySetInnerHTML={{ __html: paragraph.content }} />
+                    <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
-                <div className="items-center flex" dangerouslySetInnerHTML={{ __html: paragraph.image_sources[0] }} />
+                <div className="items-center flex float-left min-w-[60%] image-container" dangerouslySetInnerHTML={{ __html: paragraph.image_sources[0] }} />
             </div>
         </div>
     );
