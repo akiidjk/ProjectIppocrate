@@ -3,7 +3,7 @@ use std::sync::RwLock;
 use std::env;
 
 lazy_static! {
-    static ref URL_REDIS: RwLock<String> = RwLock::new("redis://:password@redis:6379".to_string());
+    static ref REDIS_URl: RwLock<String> = RwLock::new("redis://:password@redis:6379".to_string());
     static ref JWT_SECRET: RwLock<String> = RwLock::new("jwtsecret".to_string());
     static ref HASH_SECRET: RwLock<String> = RwLock::new("hashsecret".to_string());
     static ref PASSWORD_ADMIN: RwLock<String> = RwLock::new("password".to_string());
@@ -12,7 +12,7 @@ lazy_static! {
 
 pub fn get_env_variable() {
     if let Ok(val) = env::var("URL_REDIS") {
-        *URL_REDIS.write().unwrap() = val;
+        *REDIS_URl.write().unwrap() = val;
     }
     if let Ok(val) = env::var("JWT_SECRET") {
         *JWT_SECRET.write().unwrap() = val;
@@ -30,7 +30,7 @@ pub fn get_env_variable() {
 
 
 pub fn get_redis_url() -> String {
-    URL_REDIS.read().unwrap().clone()
+    REDIS_URl.read().unwrap().clone()
 }
 
 pub fn get_jwt_secret() -> String {
