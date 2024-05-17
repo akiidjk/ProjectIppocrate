@@ -8,6 +8,8 @@ import type { Metadata } from 'next'
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
+<link rel="icon" href="/favicon.ico" sizes="any" />
+
 export const metadata: Metadata = {
   title: "Salute e Benessere",
   description: "Sito descrittivo del obbiettivo salute e benessere del agenda 2030 comprensivo di tutte le materie scolasite",
