@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import {Page, usePages} from "@/context/page_provider";
 import {Button} from "@/components/ui/button";
-import {Trash2} from "lucide-react";
+import {Trash2, SquareArrowOutUpRight} from "lucide-react";
+import Link from "next/link";
 
 interface Props {
     data: Page,
@@ -33,11 +34,24 @@ export default function CardPage(props: Props) {
             <Card>
                 <CardHeader>
                     <CardTitle>{props.data.page.title}</CardTitle>
-                    <CardDescription>{props.data.time}</CardDescription>
+                    <CardDescription>
+                        <div>
+                            <p>
+                                Page created: {props.data.time}
+                            </p>
+                            <p>
+                                Page id: {props.data.id}
+                            </p>
+                        </div>
+                    </CardDescription>
                 </CardHeader>
                 <CardFooter>
-                    <div className="flex justify-between">
-
+                    <div className="flex">
+                        <Link href={`/pages/${props.data.id}`}>
+                            <Button className="mr-2">
+                                <SquareArrowOutUpRight className="size-[24px]"/>
+                            </Button>
+                        </Link>
                         <AlertDialog>
                             <AlertDialogTrigger>
                                 <Button>
