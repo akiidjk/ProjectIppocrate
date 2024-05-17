@@ -84,7 +84,7 @@ fn generate_html(page_data: &mut Page) -> () {
         match paragraph.layout_type {
             1 => {
                 title_attributes += "4";
-                image_classnames = "rounded-2xl".to_string();
+                image_classnames = "rounded-2xl image".to_string();
             }
 
             2 => {
@@ -96,10 +96,8 @@ fn generate_html(page_data: &mut Page) -> () {
             }
         }
             for s in paragraph.image_sources.iter_mut() {
-                *s = format!("<Image width={{960}} height={{570}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
+                *s = format!("<Image width={{960}} height={{570}} fill={{true}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
             }
-
-            paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
 
             paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
             paragraph.content = format!("<p>{}</p>", paragraph.content);
