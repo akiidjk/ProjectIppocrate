@@ -1,10 +1,9 @@
-mod data;
 mod model;
 mod redis;
 mod error_manager;
 mod auth;
+mod config;
 mod sanitizer;
-use std::env;
 use actix_cors::Cors;
 use std::process::exit;
 use actix_multipart::{Field, Multipart};
@@ -16,7 +15,6 @@ use deadpool_redis::{Pool, Runtime};
 use env_logger::Env;
 use log::{error, info};
 use crate::model::{Page, TokenClaims};
-use crate::data::URL_REDIS;
 use mime::{Mime,IMAGE_JPEG,IMAGE_PNG};
 use futures_util::TryStreamExt  as _;
 use image::ImageFormat;
@@ -178,7 +176,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or("debug"));
 
     // * Creation of redis config
-    let cfg = deadpool_redis::Config::from_url(URL_REDIS);
+    let cfg = deadpool_redis::Config::from_url(config::get_redis_url());
     let pool = match cfg.create_pool(Some(Runtime::Tokio1)) {
         Ok(pool) => pool,
         Err(e) => {
@@ -204,8 +202,9 @@ async fn main() -> std::io::Result<()> {
 
     redis::init_admin(pool_data).await.unwrap();
 
-    let port = env::var("PORT").unwrap_or_else(|_| "8000".to_string());
-    let port = port.parse::<u16>().expect("Invalid port given");
+    config::get_env_variable();
+
+    let port = config::get_port().parse::<u16>().expect("Invalid port given");
 
     HttpServer::new(move || {
         let bearer_middleware = HttpAuthentication::bearer(validator);

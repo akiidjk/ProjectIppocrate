@@ -12,7 +12,7 @@ use deadpool_redis::Pool;
 use hmac::{Hmac, Mac};
 use jwt::{SignWithKey, VerifyWithKey};
 use sha2::Sha256;
-use crate::data::{HASH_SECRET, JWT_SECRET};
+use crate::config;
 use crate::error_manager::ErrorManager;
 
 use crate::model::{TokenClaims, Admin};
@@ -25,7 +25,7 @@ pub async fn create_user(redis_pool: Data<Pool>, body: Admin) -> Result<String, 
 
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
-    let hash_secret = HASH_SECRET.to_string();
+    let hash_secret = config::get_hash_secret().to_string();
     let mut hasher = Hasher::default();
     let hash = hasher
         .with_password(user.password)
@@ -48,7 +48,7 @@ pub async fn create_user(redis_pool: Data<Pool>, body: Admin) -> Result<String, 
 pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl Responder {
 
     let jwt_secret: Hmac<Sha256> = Hmac::new_from_slice(
-        JWT_SECRET
+        config::get_jwt_secret()
             .as_bytes(),
     ).unwrap();
 
@@ -59,7 +59,7 @@ pub async fn basic_auth(redis_pool: Data<Pool>, credentials: BasicAuth) -> impl 
             {
                 Ok(user) => {
                     let hash_secret =
-                        HASH_SECRET.to_string();
+                    config::get_hash_secret().to_string();
                     let mut verifier = Verifier::default();
                     let is_valid = verifier
                         .with_hash(user.password)
@@ -88,7 +88,7 @@ pub async fn validator(
     req: ServiceRequest,
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, (Error, ServiceRequest)> {
-    let jwt_secret: String = JWT_SECRET.to_string();
+    let jwt_secret: String = config::get_jwt_secret().to_string();
     let key: Hmac<Sha256> = Hmac::new_from_slice(jwt_secret.as_bytes()).unwrap();
     let token_string = credentials.token();
 

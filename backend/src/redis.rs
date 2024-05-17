@@ -7,7 +7,7 @@ use crate::auth::create_user;
 use crate::error_manager::ErrorManager;
 use crate::model::{Admin, Page};
 use uuid::Uuid;
-use crate::data::PASSWORD_ADMIN;
+use crate::config;
 
 // * --------------------------- MACRO ----------------------------
 
@@ -180,7 +180,7 @@ pub async fn init_admin(redis_pool: Data<Pool>) -> Result<bool, ErrorManager> {
     let value = Admin {
         id: Uuid::new_v4().to_string(),
         username: "admin".to_string(),
-        password: PASSWORD_ADMIN.to_string()
+        password: config::get_admin_password().to_string()
     };
 
     match create_user(redis_pool, value).await {
