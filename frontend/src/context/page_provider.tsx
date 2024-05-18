@@ -6,7 +6,7 @@ import {FileStringTuple, create_page, get_pages, remove_page, upload_image} from
 export type Paragraph = {
     title: string;
     content: string;
-    image_sources: string[]
+    image_source: string
     layout_type: number
 }
 

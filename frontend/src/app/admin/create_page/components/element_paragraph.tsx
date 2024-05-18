@@ -72,7 +72,7 @@ export default  function ElementParagraph(props:Props){
                                                 Immagine:
                                             </h2>
                                             <p className="text-gray-600 mt-3">
-                                                {props.data.image_sources}
+                                                {props.data.image_source}
                                             </p>
                                         </div>
                                         <div className="flex">

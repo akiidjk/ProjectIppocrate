@@ -95,9 +95,7 @@ fn generate_html(page_data: &mut Page) -> () {
                 title_attributes += "10 text-center";
             }
         }
-            for s in paragraph.image_sources.iter_mut() {
-                *s = format!("<Image width={{960}} height={{570}} fill={{true}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, s);
-            }
+            paragraph.image_source = format!("<Image width={{960}} height={{570}} fill={{true}} class=\"{}\" src=\"{}\" alt={{\"image\"}} />", image_classnames, paragraph.image_source);
 
             paragraph.title = format!("<h1 class=\"{}\">{}</h1>", title_attributes, paragraph.title);
             paragraph.content = format!("<p>{}</p>", paragraph.content);

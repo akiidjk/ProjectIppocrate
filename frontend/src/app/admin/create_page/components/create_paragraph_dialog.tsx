@@ -131,7 +131,7 @@ export default function CreateParagraphDialog(props: CreateParagraphDialogProps)
                             props.handle({
                                 title: formData.get("paragrah_title"),
                                 content: formData.get("paragrah_content"),
-                                image_sources: [picture ? PATH_IMAGE + "image-" + picture.name : undefined],
+                                image_source: picture ? PATH_IMAGE + "image-" + picture.name : undefined,
                                 layout_type: parseInt(selectedLayout?.value as string),
                             })
                         }

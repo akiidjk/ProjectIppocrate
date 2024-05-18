@@ -92,11 +92,7 @@ fn sanitize_paragraph(paragraph: &Paragraph) -> Paragraph {
 
     sanitized_paragraph.title = sanitize_string(&sanitized_paragraph.title, options_standard);
     sanitized_paragraph.content = sanitize_string(&sanitized_paragraph.content, options_standard);
-    sanitized_paragraph.image_sources = sanitized_paragraph
-        .image_sources
-        .iter()
-        .map(|source| sanitize_string(source, options_standard))
-        .collect();
+    sanitized_paragraph.image_source = sanitize_string(&sanitized_paragraph.image_source,options_standard);
 
     sanitized_paragraph
 }

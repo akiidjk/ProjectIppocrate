@@ -16,7 +16,7 @@ pub struct HTMLPage {
 pub struct Paragraph {
     pub title: String,
     pub content: String,
-    pub image_sources: Vec<String>,
+    pub image_source: String,
     pub layout_type: u16,
 }
 
@@ -35,6 +35,6 @@ pub struct Admin {
 #[macro_export]
 macro_rules! paragraph {
     ($title:expr, $content:expr, $image_props:expr, $layout_type:expr) => {
-        Paragraph { title: $title.to_string(), content: $content.to_string(), image_sources: $image_props, layout_type: $layout_type }
+        Paragraph { title: $title.to_string(), content: $content.to_string(), image_source: $image_props, layout_type: $layout_type }
     };
 }
