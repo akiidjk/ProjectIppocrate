@@ -43,16 +43,9 @@
     - [Configurazione Docker](#configurazione)
     - [Monitoraggio e Logging](#monitoraggio-e-logging)
 
-8. Testing 🧪
+8. [Benchmark](#benchmark) 🧪
 
-    - Panoramica del Testing
-    - Testing del Backend
-    - Strumenti di Testing Utilizzati
-
-9. Aggiornamenti e Patch 📈
-    - Gestione dei Bug
-    - Documentazione del Codice
-    - Miglioramenti Futuri
+9. [Crediti](#crediti) 📈
 
 ## Introduzione
 
