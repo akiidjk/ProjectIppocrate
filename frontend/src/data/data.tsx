@@ -395,7 +395,7 @@ export const globeConfig = {
       description:
         "Nella società moderna, la salute non è più solo l'assenza di malattia, ma include il benessere fisico, mentale e sociale. Questo cambiamento si riflette nei nuovi approcci alla promozione della salute rispetto anche al passato, come stili di vita sani e attenzione alla salute mentale. La tecnologia supporta questo cambiamento, offrendo strumenti per monitorare e migliorare la salute. C'è anche una maggiore consapevolezza dell'importanza della salute ambientale e della sostenibilità. In sintesi, la salute oggi mira al benessere completo delle persone e delle comunità.",
       content: (
-        <Link href={"/admin/dashboard"}>
+        <Link href={"/pages/italianoestoria"}>
           <div className="h-full w-full flex items-center justify-center color-white image-container">
             <Image
               src="/italiano-storia.jpg"
@@ -412,6 +412,7 @@ export const globeConfig = {
       description:
         "L'ipertermia è una tecnica terapeutica che sfrutta il riscaldamento del corpo o di specifiche aree per trattare diverse condizioni mediche. Questo trattamento può essere utilizzato in vari contesti, tra cui il cancro, in cui l'ipertermia può migliorare l'efficacia della radioterapia o della chemioterapia. Inoltre, viene studiata anche per il trattamento di patologie infiammatorie e dolorose. L'ipertermia può essere applicata localmente o in tutto il corpo e può coinvolgere diverse modalità, come il riscaldamento esterno o interno tramite dispositivi ad onde elettromagnetiche o ultrasuoni.",
       content: (
+        <Link href={"/pages/telecomunicazioni"}>
         <div className="h-full w-full bg-red flex items-center justify-center text-white">
           <Image
             src="/cellule.webp"
@@ -420,13 +421,15 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
-      title: "L'  Istat: stile di vita e salute",
+      title: "L'Istat: stile di vita e salute",
       description:
         "L'Istituto Nazionale di Statistica (Istat) svolge un ruolo fondamentale nell'analisi dello stile di vita e della salute della popolazione italiana. Attraverso indagini demografiche, sondaggi e raccolte dati, l'Istat fornisce una panoramica dettagliata sui comportamenti, le abitudini e le condizioni di salute della società italiana. Queste informazioni sono cruciali per comprendere le tendenze di lungo termine, identificare i fattori di rischio e sviluppare politiche sanitarie mirate a migliorare il benessere della popolazione.",
       content: (
+        <Link href={"/pages/matematica"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
           <Image
             src="/istat.jpg"
@@ -435,6 +438,7 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
@@ -442,6 +446,7 @@ export const globeConfig = {
       description:
         "Internet of Medical Things rappresenta l'applicazione di dispositivi e tecnologie connessi in rete nel settore sanitario. Questi dispositivi, consentono la raccolta, la trasmissione e l'analisi di dati clinici in tempo reale. L'IoMT offre numerosi vantaggi, tra cui il monitoraggio remoto dei pazienti, la gestione efficiente delle cure, la diagnosi precoce delle malattie e la personalizzazione dei trattamenti. Tuttavia, comporta anche sfide legate alla sicurezza dei dati, alla privacy e alla regolamentazione rivoluzionando il sistema sanitario.",
       content: (
+        <Link href={"/pages/tps"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
             <Image
             src="/iomt.jpg"
@@ -450,6 +455,7 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
@@ -457,6 +463,7 @@ export const globeConfig = {
       description:
         "Internet of Things, è una rete di dispositivi fisici, veicoli, elettrodomestici e altri oggetti incorporati con sensori, software e connettività di rete che consentono loro di raccogliere e scambiare dati. Questi dispositivi comunicano tra loro e con altri sistemi attraverso internet, consentendo una vasta gamma di applicazioni in diversi settori, inclusi il monitoraggio ambientale, la sicurezza domestica, la gestione delle risorse energetiche e la salute digitale. L'IoT sta rivoluzionando la nostra vita quotidiana e il modo in cui interagiamo con il mondo circostante.",
       content: (
+        <Link href={"/pages/sistemi"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
             <Image
             src="/iot.jpg"
@@ -465,6 +472,7 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
@@ -472,6 +480,7 @@ export const globeConfig = {
       description:
         "Il rapporto tra identità religiosa e diritto alla salute solleva questioni complesse che riguardano la libertà di credo e l'accesso alle cure mediche. Mentre la religione può influenzare le decisioni riguardanti la salute, inclusa la scelta di cure mediche, vi sono situazioni in cui le pratiche religiose possono entrare in conflitto con le cure mediche standard o con i diritti alla salute di individui e comunità. Questo solleva domande e porta a dialoghi etici e legali riguardanti il bilanciamento tra le credenze religiose e la tutela della salute pubblica.",
       content: (
+        <Link href={"/pages/religione"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
           <Image
             src="/religione.jpg"
@@ -480,6 +489,7 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
@@ -487,6 +497,7 @@ export const globeConfig = {
       description:
         "Le dipendenze rappresentano un complesso problema che può influenzare diverse aree della vita di un individuo, inclusa la salute fisica e mentale, le relazioni interpersonali e il funzionamento quotidiano. Queste dipendenze possono assumere molte forme, come dipendenza da sostanze, comportamenti compulsivi come il gioco d'azzardo o l'uso eccessivo di tecnologia, e dipendenze comportamentali come l'alimentazione incontrollata. Affrontare le dipendenze richiede un approccio multifacetico che coinvolga la prevenzione, la consapevolezza, il trattamento e il sostegno sociale.",
       content: (
+        <Link href={"/pages/educazionefisica"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
             <Image
             src="/Dipendenze.jpg"
@@ -495,6 +506,7 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
@@ -502,6 +514,7 @@ export const globeConfig = {
       description:
         "Nella Costituzione italiana, il concetto di salute e benessere è sancito principalmente nell'articolo 32, il quale stabilisce il diritto alla tutela della salute come un fondamentale diritto sociale e  si impegna a garantire l'assistenza sanitaria a tutti i cittadini e pone l'accento sul principio di solidarietà sociale nella protezione della salute. Nei paesi anglosassoni, il concetto di salute e benessere spesso riflette una prospettiva più ampia che include non solo l'accesso alle cure mediche, ma anche la responsabilità individuale per la propria salute. Questa prospettiva mette l'accento sull'importanza dello stile di vita sano,  della prevenzione delle malattie e dell'educazione sulla salute e su come i sistemi sanitari possono variare notevolmente da paese a paese.",
       content: (
+        <Link href={"/pages/inglese"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
             <Image
             src="/inglese.jpg"
@@ -510,22 +523,25 @@ export const globeConfig = {
             alt="linear board demo"
           />
         </div>
+        </Link>
       ),
     },
     {
       title: "Sicurezza informatica",
       description:
         "Le fonti digitali rappresentano una fonte inestimabile di informazioni nell'era moderna, consentendo un accesso senza precedenti a una vasta gamma di contenuti. Tuttavia, questa facilità di accesso può anche comportare rischi significativi. Uno di questi rischi è rappresentato dalle fake news, informazioni false o fuorvianti che possono essere diffuse rapidamente attraverso le piattaforme digitali. La lotta alle fake news è diventata una sfida critica per individui, istituzioni e piattaforme online. È necessario adottare strategie efficaci per identificare, contrastare e ridurre la diffusione di informazioni ingannevoli.",
-      content: (
-        <div className="h-full w-full bg-black flex items-center justify-center text-white">
-            <Image
-            src="/sicurezza-informatica.jpg"
-            fill={true}
-            className="h-full w-full object-cover"
-            alt="linear board demo"
-          />
-        </div>
-      ),
+        content: (
+          <Link href={"/pages/informatica"}>
+          <div className="h-full w-full bg-black flex items-center justify-center text-white">
+              <Image
+              src="/sicurezza-informatica.jpg"
+              fill={true}
+              className="h-full w-full object-cover"
+              alt="linear board demo"
+            />
+          </div>
+          </Link>
+        ),
     },
   ];
 
