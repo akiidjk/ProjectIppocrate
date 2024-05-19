@@ -25,8 +25,6 @@ export type Page = {
 type PagesContextType = {
     pages: Page[];
     status: Status;
-    toEdit: null | Page;
-    setToEdit: (edit: null | Page) => void
     addPage: (page: Page,token:string,files: FileStringTuple[]) => Promise<number>;
     addParagraph: (newParagraph: Paragraph, idPage: string) => void;
     removeParagraph: (index: number, idPage: string) => void
@@ -39,8 +37,6 @@ type Status = "active" | "loading" | "inactive";
 const defaultPagesContext: PagesContextType = {
     pages: [],
     status: "inactive",
-    toEdit: null,
-    setToEdit: () => {},
     addPage: async  () => {return 1},
     addParagraph: () => {},
     removeParagraph:   () => {},
@@ -55,7 +51,6 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
 
     const [pages, setPages] = useState<Page[]>([]);
     const [status, setStatus] = useState<Status>("inactive");
-    const [toEdit, setToEdit] = useState<Page | null>(null);
 
     useEffect(() => {
         setStatus("loading")
@@ -133,7 +128,7 @@ export const PagesProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <PagesContext.Provider value={{ pages, addPage,remove_page_by_index, addParagraph, removeParagraph, addParagraphs, status, toEdit,setToEdit}}>
+        <PagesContext.Provider value={{ pages, addPage,remove_page_by_index, addParagraph, removeParagraph, addParagraphs, status}}>
             {children}
         </PagesContext.Provider>
             );
