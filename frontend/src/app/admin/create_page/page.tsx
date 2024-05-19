@@ -1,7 +1,7 @@
 "use client"
 
 import { getSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {useEffect, useRef, useState} from "react";
 
 import {
@@ -29,7 +29,7 @@ export default function CreateAdminPage() {
     const [loading, setLoading] = useState(true);
     const [files, setFiles] = useState<[File, string][]>([]);
     const resizeNull = useRef<ImperativePanelHandle>(null);
-    const { addPage,toEdit } = usePages();
+    const { addPage } = usePages();
     const [token,setToken] = useState("");
     const [key, setKey] = useState(0);
     const {toast} = useToast()
@@ -52,12 +52,8 @@ export default function CreateAdminPage() {
             setToken(session?.user?.name ?? 'session not found');
         }
         fetchSession();
-
-        if(toEdit){
-            setLocalPage(toEdit)
-        }
         
-    }, [router, toEdit]);
+    }, [router]);
 
 
 

@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import Navbar from "@/app/components/navbar";
-import {getSession, useSession} from "next-auth/react";
+import {getSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import Loader from "@/app/components/loader";
 import { useEffect, useState } from "react";

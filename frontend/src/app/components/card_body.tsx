@@ -30,21 +30,21 @@ export const items_bentobox = [
   {
     title: "Cambiamenti moderni nel concetto di salute.",
     description: "Societa antica, medievale e moderna",
-    header: <Skeleton src="/storia.jpg" url="#" />,
+    header: <Skeleton src="/storia.jpg" url="/pages/italianoestoria" />,
     className: "md:col-span-2",
     icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
   },
   {
     title: "L’Istat: stile di vita e salute.",
     description: "L’importanza della prevenzione.",
-    header: <Skeleton src="/istat.png" url="#"  />,
+    header: <Skeleton src="/istat.png" url="/pages/matematica"  />,
     className: "md:col-span-1",
     icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
   },
   {
     title: "I pericoli delle dipendenze",
     description: "I pericoli delle dipendenze e i rischi legati all'assunzione di sostanze stupefacenti",
-    header: <Skeleton src="/dipendenze.jpeg" url="#"  />,
+    header: <Skeleton src="/dipendenze.jpeg" url="/pages/educazionefisica"  />,
     className: "md:col-span-1",
     icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
   },
@@ -52,7 +52,7 @@ export const items_bentobox = [
     title: "Confrontarsi con la proposta cristiana",
     description:
       "Riconoscendone l’originale contributo per la realizzazione di un mondo più umano.",
-    header: <Skeleton src="/christian.jpg" url="#"  />,
+    header: <Skeleton src="/christian.jpg" url="/pages/religione"  />,
     className: "md:col-span-2",
     icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
   },
