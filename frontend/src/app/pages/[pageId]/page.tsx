@@ -95,7 +95,7 @@ function Layout2({ paragraph }: { paragraph: any }) {
                 <div className="w-[70%] float-right ml-4 mr-4">
                     <div dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: paragraph.image_source[0] }} />
+                <div dangerouslySetInnerHTML={{ __html: paragraph.image_source }} />
             </div>
         </div>
     );
@@ -122,7 +122,7 @@ function Layout4({ paragraph }: { paragraph: any }) {
                     <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.title }} />
                     <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
-                <div className="items-center flex float-left min-w-[60%] image-container" dangerouslySetInnerHTML={{ __html: paragraph.image_source[0] }} />
+                <div className="items-center flex float-left min-w-[60%] image-container" dangerouslySetInnerHTML={{ __html: paragraph.image_source }} />
             </div>
         </div>
     );
@@ -132,7 +132,7 @@ function Layout5({ paragraph }: { paragraph: any }) {
     return (
         <div className="m-20">
             <div className="mt-20 flex">
-                <div dangerouslySetInnerHTML={{ __html: paragraph.image_source[0] }} />
+                <div dangerouslySetInnerHTML={{ __html: paragraph.image_source }} />
                 <div className="w-[70%] float-right ml-4 mr-4">
                     <div dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
