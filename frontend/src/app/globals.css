@@ -503,3 +503,9 @@
       height: unset !important;
     }
   }
+
+
+  .title_paragraph{
+    font-size: 24px;
+    /* text-decoration: underline; */
+  }
