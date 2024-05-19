@@ -82,7 +82,7 @@ Il progetto è diviso in tre macro componenti:
 
 ### Diagrammi di Architettura
 
-(Diagrammi di architettura dovrebbero essere inclusi qui)
+![diagram](/assets/Strcture.drawioLight.svg)
 
 ### Cosa lo rende diverso da un normale sito?
 
