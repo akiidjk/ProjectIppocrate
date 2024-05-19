@@ -20,6 +20,7 @@ export default function Credits(){
                 </div>
                 <div className=" grid grid-cols-2 gap-12 m-[90px] ">
                     <div className="shadow">
+                        
                         <p className="text-left m-4">il sito è stato progettato ed ideato da Francesco Memoli, Giuseppe Pio Vicedomini, Daniele Migliore, Rosario Viscardi e Enrico Cipolletta </p>
                         <p className="text-left m-4">Elenco delle risorse utilizzate per la realizzazione del sito web:</p>
                         
@@ -27,10 +28,14 @@ export default function Credits(){
                             <li>Framework-Frontend: <Link target="_blank" href="https://nextjs.org/"  className="text-sky-700 hover:underline">NextJs</Link></li>
                             <li>Framework-Backend: <Link target="_blank" href="https://actix.rs/"  className="text-sky-700 hover:underline">Actix</Link></li>
                             <li>Database usato: <Link target="_blank" href="https://redis.io/"  className="text-sky-700 hover:underline">Redis</Link></li>
-                        </ul>: 
+                        </ul>
+
+                        <Link href="https://github.com/akiidjk/ProjectIppocrate?tab=readme-ov-file#projectippocrate-%EF%B8%8F">
+                            <p className="text-sky-700 hover:underline m-4">Documentazione completa</p>
+                        </Link>
                     </div>
-                    {/* TODO TO FIX */}
-                    <div className="shadow"><p className="text-left m-4">Il sito Salute e Benessere è stato creato per descrivere il terzo obiettivo dell&apos;  agenda 2030 da cui prende il nome il sito: &ldquo;Salute e Benessere&ldquo;. Ognuno si è occupato di un aspetto differente per la sua realizzazione: Daniele si è occupato del backend gestendo il caricamento delle pagine dinamiche sfruttando il database, Giuseppe si è occupato del frontend e quindi di come dovesse apparire, Enrico e Rosario hanno procurato il materiale da inserire per ogni materia e infine Francesco ha gestito e organizzato il team aiutando singolarmente chi avesse bisogno. Un ringraziamento va anche alla fidanzata di Franco che ha creato il logo </p></div>
+
+                    <div className="shadow"><p className="text-left m-4">Il sito &quot;Salute e Benessere&quot; è nato per promuovere il terzo obiettivo dell&apos;Agenda 2030, concentrato su salute e benessere.Francesco Memoli ha coordinato il progetto, contribuendo sia al design che alla gestione tecnica del sito. Giuseppe Pio Vicedomini ha sviluppato il frontend, creando pagine accessibili e attraenti per gli utenti. Daniele Migliore ha gestito il backend, assicurando l&apos;efficienza del caricamento delle pagine. Rosario Viscardi ed Enrico Cipoletta hanno raccolto fonti e immagini di alta qualità per il sito.Grazie alla collaborazione del team, il sito &quot;Salute e Benessere&quot; è una risorsa preziosa sull&apos;Agenda 2030.</p></div>
                 </div>
 
             </div>
