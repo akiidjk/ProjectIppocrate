@@ -47,6 +47,8 @@
 
 9. [Crediti](#crediti) 📈
 
+10. [English Version](#english-version)
+
 ## Introduzione
 
 ### Panoramica del progetto
@@ -384,3 +386,340 @@ Il progetto è stato svolto dal gruppo:
 - **Enrico Cipoletta**: Ha collaborato al recupero delle fonti e delle immagini, lavorando in tandem con Rosario per garantire l'integrità visiva del progetto.
 
 ❗ documentazione scritta da @akiidjk
+
+# English version
+
+## Introduction
+
+### Project Overview
+
+The project was created as the final work for the 2023/24 school year in civic education. This year we decided to use new technologies and languages to experiment and challenge ourselves with an innovative and unconventional approach, with the goal of replicating a mini [CMS](https://www.ibm.com/topics/content-management-system).
+
+### Objectives
+
+The objective was to adopt a different and stimulating approach, testing not only individual skills but also group abilities, aiming to work efficiently and quickly.
+
+### Context within the 2030 Agenda
+
+The Sustainable Development Goals (SDGs) are a set of 17 interconnected goals defined by the United Nations as a strategy "to achieve a better and more sustainable future for all." This year, we focused on Goal 3 of the Agenda, which concerns the health and well-being of every human being.
+
+### Why Project Ippocrate?
+
+We chose this name for two reasons:
+
+- Simplicity (the name is shorter than "Civic Education Health and Well-being Goal").
+- Hippocrates was the author of the Aphorisms, a work that Dante, like everyone of his time, considered the foundation of medical learning and regarded medicine as a science based on a rational method of diagnosis and therapy.
+
+## Project Structure
+
+### General Architecture
+
+The project is divided into three main components:
+
+- **Frontend**: Handles the client side and the aesthetics (and more).
+- **Backend**: Manages the communication between the frontend and the database, including authentication.
+- **Database**: Contains all the information necessary for the functioning.
+
+### Architecture Diagrams
+
+(Architecture diagrams should be included here)
+
+### What Makes It Different from a Regular Website?
+
+One of the innovative aspects of this project is the ability to create pages dynamically through an admin panel. This functionality offers significant flexibility compared to traditional websites, allowing administrators to:
+
+- Create new pages
+- Modify existing pages
+- Remove unnecessary pages
+
+The process goes beyond merely passing simple JSON between the frontend and backend. When an administrator sends a POST request to create a page, the backend performs a data transformation and pre-compilation process. This means that:
+
+- The page data is processed and transformed into well-defined structures.
+- Correct CSS classes and other stylistic configurations are applied.
+- Utilizing the power of Rust, these transformations are highly efficient, reducing the frontend's workload and improving the overall performance of the site.
+
+### Page Creation Flow
+
+1. **Creation Request**: The administrator sends a POST request through the control panel, providing the necessary data for the new page.
+2. **Backend Processing**: The backend, written in Rust, receives the request and starts the transformation process:
+   - Validates the received data.
+   - Applies the necessary transformations to pre-compile the content.
+   - Associates the correct CSS classes and other stylistic elements.
+3. **Database Storage**: The transformed data is stored in the Redis database, using specific keys for easy retrieval.
+4. **Retrieval and Display**: When a user requests the new page, the backend retrieves the pre-compiled data from Redis and sends it to the frontend, which displays it immediately without further processing.
+
+### Architecture Advantages
+
+- **Efficiency**: Pre-compiling data reduces the frontend's workload, making the application more responsive.
+- **Flexibility**: Administrators can manage site content in real-time without modifying the source code.
+- **Scalability**: Using Rust and Redis, the application is designed to handle large volumes of data and simultaneous requests, ensuring high performance even under load.
+
+This innovative architecture allows full utilization of Rust's capabilities, combining the speed and security of a low-level language with the flexibility of a modern frontend framework like NextJS.
+
+## Setup and Installation
+
+### System Requirements
+
+- Docker
+- Any operating system (OS)
+
+### Installation
+
+Installing the project is very simple, just have Docker installed on your machine:
+
+- [Windows Installation](https://www.docker.com/products/docker-desktop/)
+- [Linux Installation](https://docs.docker.com/engine/install/ubuntu/)
+
+Next, copy the project to your disk using git with the command `git clone https://github.com/akiidjk/ProjectIppocrate.git` or download the folder via this [link](https://github.com/akiidjk/ProjectIppocrate/archive/refs/heads/main.zip). Once this is done, navigate to the downloaded folder via terminal and run the command `docker compose up --build` or `docker-compose up --build`.
+
+After completing these steps, go to localhost:3000.
+
+## Frontend
+
+### Technologies Used
+
+For the frontend, we used [NextJS](https://nextjs.org/) with Typescript, employing the UI library [shadcnUI](https://ui.shadcn.com/). This combination significantly accelerated the frontend development process. For design creation and color selection, we used [Figma](https://www.figma.com/) for UI/UX and [Adobe Color](https://color.adobe.com/) for color palettes.
+
+As a [Javascript Runtime](https://www.freecodecamp.org/news/javascript-engine-and-runtime-explained/) and package manager, instead of using the standard [Node](https://nodejs.org/en), we experimented with [Bun](https://bun.sh/), a JS Runtime written in Rust that greatly speeds up many operations like the classic `npm install`.
+
+Other technologies used, included by default with NextJS, are:
+
+- [Tailwindcss](https://tailwindcss.com/) for styling.
+- [Eslint](https://eslint.org/) for code linting.
+- [Postcss](https://postcss.org/) for CSS transformations.
+
+### Main Components
+
+The frontend is divided into two main sections:
+
+- **Open Section**: Accessible to everyone, this section includes pages with topics, the homepage, and other public pages.
+- **Closed Section**: Accessible only to the admin, this section is dedicated to creating and manipulating pages. All components of the closed section are contained within the Admin folder.
+
+### State Management
+
+- **State Providers**: Manages session and local page state.
+- **Authentication**: Module dedicated to admin authentication.
+- **Backend Communication**: Module dedicated to making backend calls.
+
+### Routing and Navigation
+
+NextJS implements a default routing system, eliminating the need to install external packages like [ReactRouter](https://reactrouter.com/en/main).
+
+## Backend
+
+### Technologies Used
+
+For the backend, we chose to use [Rust](https://www.rust-lang.org/), a low-level language with particularly efficient memory management based on [Ownership and Borrowing](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html). Rust is known for its security and performance, making it ideal for developing scalable and high-performance backends.
+
+In particular, we used the framework [Actix](https://actix.rs/), which allowed us to create a modular and scalable structure for our backend.
+
+## Middleware
+
+The implemented middleware covers only the endpoints that require database modifications or handle POST requests. We did not implement a global middleware for security against potential attacks due to time constraints, but it can be easily implemented later.
+
+Specifically, the current middleware verifies that the user is authenticated and has an access token generated during login. Here is an example of middleware for authentication:
+
+```rust
+pub async fn validator(
+    req: ServiceRequest,
+    credentials: BearerAuth,
+) -> Result<ServiceRequest, (Error, ServiceRequest)> {
+    let jwt_secret: String = config::get_jwt_secret().to_string();
+    let key: Hmac<Sha256> = Hmac::new_from_slice(jwt_secret.as_bytes()).unwrap();
+    let token_string = credentials.token();
+
+    let claims: Result<TokenClaims, &str> = token_string
+        .verify_with_key(&key)
+        .map_err(|_| "Invalid token");
+
+    match claims {
+        Ok(value) => {
+            req.extensions_mut().insert(value);
+            Ok(req)
+        }
+        Err(_) => {
+            let config = req
+                .app_data::<bearer::Config>()
+                .cloned()
+                .unwrap_or_default()
+                .scope("");
+
+            Err((AuthenticationError::from(config).into(), req))
+        }
+    }
+}
+```
+
+This middleware checks for the presence of the access token in the Authorization header of the requests and validates the token before allowing access to protected endpoints.
+
+### Security (Authentication and Authorization)
+
+Authentication is performed through hashing and some external libraries dedicated to this function. The username and password are encrypted and stored in the database, and once accessed, they are decrypted, compared, and verified.
+
+#### Technologies and Libraries Used
+
+To implement the authentication system, we use the following technologies and libraries:
+
+- **Argonautica**: For hashing and verifying passwords.
+- **Hmac and Sha256**: For signing and verifying JWT tokens.
+- **JWT**: For managing authentication tokens.
+- **Serde**: For serializing and deserializing data.
+
+The `create_user` function handles the creation of a new user by hashing the password before saving it to the Redis database.
+
+The `basic_auth` function handles user authentication using basic authentication and generating a JWT token upon success.
+
+The `validator` middleware verifies the validity of the JWT token present in protected requests.
+
+## Database
+
+### Technologies Used
+
+For the database, we chose [Redis](https://redis.io/), a NoSQL solution with multiple functionalities. Redis can be used as a cache, database, or even as a vector DB. In our case, we use it as a simple NoSQL database to store structured and unstructured data.
+
+### Data Structure
+
+As Redis is a NoSQL database, data is organized into keys and values. We chose to use a single cluster, with keys prefixed by specific strings to easily identify the different types of stored data.
+
+- **"auth/"**: Prefix used to store users.
+  - Example: "auth/admin
+
+"
+- **"image-"**: Prefix used to store images.
+  - Example: "image-image_name"
+
+**Page Model:**
+
+```json
+{
+    "id": "page_name",
+    "page": {
+        "title": "Page Title",
+        "paragraphs": [
+            {
+                "title": "paragraph_title",
+                "content": "content",
+                "image_source": "image endpoint",
+                "layout_type": 1
+            }
+        ]
+    },
+    "time": "creation time"
+}
+```
+
+### Redis Configuration
+
+To configure Redis, follow these steps:
+
+1. **Cluster Configuration**:
+   - Although we are using a single cluster, Redis supports more complex configurations. For our case, a default installation is sufficient.
+
+2. **Connecting to Redis**:
+   - We use the deadpool-redis library to manage connections to Redis in our project.
+
+## Deployment
+
+### Production Environment
+
+For the production environment, we used [Railway](https://railway.app/), a cloud platform that allows the deployment of web applications and more. Railway offers simple and intuitive configuration for continuous deployment, making it easy to keep the application up to date.
+
+### Configuration
+
+We configured the deployment using the Docker files present in the projects. By linking the repository to Railway, we can take advantage of automatic code updates.
+
+**Frontend Docker Configuration**
+
+The Docker file for the frontend uses Bun, a JavaScript runtime written in Rust, to improve the speed of operations.
+
+```Dockerfile
+FROM oven/bun AS base
+
+FROM base AS deps
+WORKDIR /app
+
+COPY package.json ./
+RUN bun install --frozen-lockfile
+
+FROM base AS builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN bun run build
+
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+
+RUN mkdir -p /app/.next/cache/images
+RUN chown -R nextjs:bun /app/.next /app/node_modules
+
+USER nextjs
+
+CMD ["bun", "start", "--", "-H", "0.0.0.0", "-p $PORT"]
+```
+
+**Backend Docker Configuration**
+
+The Docker file for the backend uses Rust to compile and run the application.
+
+```Dockerfile
+FROM rust:1.77
+
+WORKDIR /usr/src/backend
+COPY . .
+
+EXPOSE 8000
+
+RUN apt-get update && \
+    apt-get install -y clang llvm-dev libclang-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN cargo build --release
+
+CMD ["./target/release/backend"]
+```
+
+## Monitoring and Logging
+
+### Monitoring
+
+Monitoring the application in production is essential to ensure availability and performance. Railway offers integrated tools for monitoring distributed applications. Additionally, further monitoring and alerting services, such as Prometheus and Grafana, can be integrated for deeper visibility.
+
+### Logging
+
+Logging was primarily implemented for the backend during the development phase. In production, only critical logs related to endpoint access and main errors have been retained.
+
+## Benchmark
+
+To test the high performance of the backend, we created benchmarks using [Locust](https://pypi.org/project/locust/), an open-source load testing tool that allows simulating thousands of concurrent users to evaluate application performance.
+
+### Load Test Configuration
+
+In the backend folder, the Locust configuration files and the test reports are available.
+
+## Credits
+
+The project was carried out by the group:
+
+- **Memoli Francesco**: Managed the project and the group, contributing to both the frontend (designing the admin and dynamic areas) and the backend, taking care of the image CDN system and admin authentication.
+- **Giuseppe Pio Vicedomini**: Worked on the frontend part not dedicated to the admin, developing the pages accessible to all users.
+- **Daniele Migliore**: Designed the backend, data structures, and HTML pre-compilation in the backend.
+- **Rosario Viscardi**: Contributed to sourcing and image collection, ensuring that all materials used were appropriate and of high quality.
+- **Enrico Cipoletta**: Collaborated in sourcing and image collection, working in tandem with Rosario to ensure the project's visual integrity.
+
+❗ Documentation written by @akiidjk
