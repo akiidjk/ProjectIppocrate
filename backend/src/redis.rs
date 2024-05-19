@@ -79,7 +79,7 @@ pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Resul
 
 fn generate_html(page_data: &mut Page) -> () {
     for paragraph in page_data.page.paragraphs.iter_mut() {
-        let mut title_attributes: String = "lg:text-[54px] sm:text-[34px] font-bold mb-".to_string();
+        let mut title_attributes: String = "lg:text-[46px] sm:text-[34px] font-bold mb-".to_string();
         let mut image_classnames: String = String::new();
         match paragraph.layout_type {
             1 => {
@@ -107,7 +107,6 @@ fn generate_html(page_data: &mut Page) -> () {
 
 pub async fn remove(redis_pool: Data<Pool>, key: &str) -> Result<bool, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
-    remove_redis_value!(conn, key);
     remove_redis_value!(conn, key);
     Ok(true)
 }
@@ -167,6 +166,8 @@ pub async fn get_keys(redis_pool: Data<Pool>) -> Result<Vec<String>, ErrorManage
 
         cursor = new_cursor;
     }
+
+
 
     Ok(all_keys)
 }

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import {Page, usePages} from "@/context/page_provider";
 import {Button} from "@/components/ui/button";
-import {Trash2, SquareArrowOutUpRight} from "lucide-react";
+import {Trash2, SquareArrowOutUpRight, Edit} from "lucide-react";
 import Link from "next/link";
 
 interface Props {
@@ -28,6 +28,7 @@ interface Props {
 }
 
 export default function CardPage(props: Props) {
+    const { setToEdit } = usePages();
 
     return (
         <div className="m-5">
@@ -50,6 +51,11 @@ export default function CardPage(props: Props) {
                         <Link href={`/pages/${props.data.id}`}>
                             <Button className="mr-2">
                                 <SquareArrowOutUpRight className="size-[24px]"/>
+                            </Button>
+                        </Link>
+                        <Link href={`/admin/create_page`}>
+                            <Button className="mr-2" onClick={() => setToEdit(props.data)}>
+                                <Edit className="size-[24px]"/>
                             </Button>
                         </Link>
                         <AlertDialog>

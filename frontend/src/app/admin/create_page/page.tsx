@@ -1,7 +1,7 @@
 "use client"
 
 import { getSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {useEffect, useRef, useState} from "react";
 
 import {
@@ -17,11 +17,10 @@ import {Button} from "@/components/ui/button";
 import Expand from "@/app/admin/create_page/components/svg/expand";
 import { RefreshCcw  } from 'lucide-react';
 import {ImperativePanelHandle} from "react-resizable-panels";
-import {Paragraph, usePages} from "@/context/page_provider";
+import {Page, Paragraph, usePages} from "@/context/page_provider";
 import PreviewPage from "@/app/admin/create_page/components/preview_page";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {useToast} from "@/components/ui/use-toast";
-
 
 
 export default function CreateAdminPage() {
@@ -30,11 +29,18 @@ export default function CreateAdminPage() {
     const [loading, setLoading] = useState(true);
     const [files, setFiles] = useState<[File, string][]>([]);
     const resizeNull = useRef<ImperativePanelHandle>(null);
-    const { addPage } = usePages();
+    const { addPage,toEdit } = usePages();
     const [token,setToken] = useState("");
     const [key, setKey] = useState(0);
     const {toast} = useToast()
-
+    const [localPage, setLocalPage] = useState<Page>({
+        id: '',
+        page: {
+            title: '',
+            paragraphs: []
+        },
+        time: new Date().toDateString()
+    });
 
     const rebuildComponent = () => {
         setKey(prevKey => prevKey + 1);
@@ -46,16 +52,14 @@ export default function CreateAdminPage() {
             setToken(session?.user?.name ?? 'session not found');
         }
         fetchSession();
-    }, [router]);
 
-    const [localPage, setLocalPage] = useState({
-        id: '',
-        page: {
-            title: '',
-            paragraphs: []
-        },
-        time: new Date().toDateString()
-    });
+        if(toEdit){
+            setLocalPage(toEdit)
+        }
+        
+    }, [router, toEdit]);
+
+
 
     const handleParagraph = (newParagraph: Paragraph) => {
         // @ts-ignore
@@ -74,7 +78,6 @@ export default function CreateAdminPage() {
             newImage
         ]);
     }
-    
 
     const savePage = () => {
         addPage(localPage, token, files).then(r => {
