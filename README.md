@@ -422,7 +422,7 @@ The project is divided into three main components:
 
 ### Architecture Diagrams
 
-(Architecture diagrams should be included here)
+![diagram](/assets/Strcture.drawioLight.svg)
 
 ### What Makes It Different from a Regular Website?
 
