@@ -146,18 +146,29 @@ pub async fn get_page(redis_pool: Data<Pool>, key: &str) -> Result<Page, ErrorMa
 pub async fn get_keys(redis_pool: Data<Pool>) -> Result<Vec<String>, ErrorManager> {
     let mut conn = redis_pool.get().await.map_err(ErrorManager::PoolError)?;
 
-    let cursor: u64 = 0;
+    let mut cursor: u64 = 0;
+    let mut all_keys: Vec<String> = Vec::new();
 
-    let (_cursor, mut keys): (u64, Vec<String>) = redis::cmd("SCAN")
-        .arg(cursor)
-        .query_async(&mut conn)
-        .await?;
+    loop {
+        let (new_cursor, mut keys): (u64, Vec<String>) = redis::cmd("SCAN")
+            .arg(cursor)
+            .query_async(&mut conn)
+            .await?;
 
-    keys.retain(|x| {
-        x != "auth/admin" && !x.contains("image-")
-    });
-    
-    Ok(keys)
+        keys.retain(|x| {
+            x != "auth/admin" && !x.contains("image-")
+        });
+
+        all_keys.extend(keys);
+
+        if new_cursor == 0 {
+            break;
+        }
+
+        cursor = new_cursor;
+    }
+
+    Ok(all_keys)
 }
 
 pub async fn get_pages(redis_pool: Data<Pool>) -> Result<Vec<Page>, ErrorManager> {
