@@ -510,9 +510,9 @@ export const globeConfig = {
       ),
     },
     {
-      title: "Paesi a confronto",
+      title: "Comparing countries",
       description:
-        "Nella Costituzione italiana, il concetto di salute e benessere è sancito principalmente nell'articolo 32, il quale stabilisce il diritto alla tutela della salute come un fondamentale diritto sociale e  si impegna a garantire l'assistenza sanitaria a tutti i cittadini e pone l'accento sul principio di solidarietà sociale nella protezione della salute. Nei paesi anglosassoni, il concetto di salute e benessere spesso riflette una prospettiva più ampia che include non solo l'accesso alle cure mediche, ma anche la responsabilità individuale per la propria salute. Questa prospettiva mette l'accento sull'importanza dello stile di vita sano,  della prevenzione delle malattie e dell'educazione sulla salute e su come i sistemi sanitari possono variare notevolmente da paese a paese.",
+        "In the Italian Constitution, the concept of health and well-being is mainly enshrined in Article 32, which establishes the right to health protection as a fundamental social right and commits to guarantee health care for all citizens and emphasises the principle of social solidarity in health protection. In Anglo-Saxon countries, the concept of health and well-being often reflects a broader perspective that includes not only access to medical care, but also individual responsibility for one's own health. This perspective emphasises the importance of a healthy lifestyle, disease prevention and health education and how health systems can vary greatly from country to country.",
       content: (
         <Link href={"/pages/inglese"}>
         <div className="h-full w-full bg-black flex items-center justify-center text-white">
