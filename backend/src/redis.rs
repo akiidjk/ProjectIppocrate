@@ -79,7 +79,7 @@ pub async fn create_page(redis_pool: Data<Pool>, key:&str, value: Page) -> Resul
 
 fn generate_html(page_data: &mut Page) -> () {
     for paragraph in page_data.page.paragraphs.iter_mut() {
-        let mut title_attributes: String = "lg:text-[46px] sm:text-[34px] font-bold mb-".to_string();
+        let mut title_attributes: String = "title_paragraph font-bold mb-".to_string();
         let mut image_classnames: String = String::new();
         match paragraph.layout_type {
             1 => {

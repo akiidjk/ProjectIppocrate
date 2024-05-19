@@ -39,7 +39,7 @@ export default function PageTemplate({ params }: { params: { pageId: string } })
         <div>
             <Navbar />
             <div className="ml-12 mr-12 flex flex-col items-center justify-center">
-                <h1 className={cn(`lg:text-[100px] sm:text-[60px]  ${inter.className} font-bold relative z-20`)}>
+                <h1 className={cn(`lg:text-[80px] sm:text-[60px]  ${inter.className} font-bold relative z-20`)}>
                     {/* @ts-ignore */}
                     {pageTarget.page.title}
                 </h1>
@@ -79,9 +79,9 @@ function Layout1({ paragraph }: { paragraph: any }) {
         <div className="m-20">
             <div className="mt-20 flex">
                 <div className="items-center flex float-left min-w-[50%] image-container" dangerouslySetInnerHTML={{ __html: paragraph.image_source }} />
-                <div className="float-right mr-12 ml-4 max-w-[50%]">
-                    <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.title }} />
-                    <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
+                <div className="float-right items-center mr-12 ml-4 max-w-[50%]">
+                    <div className="break-word" dangerouslySetInnerHTML={{ __html: paragraph.title }} />
+                    <div className="break-word" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
             </div>
         </div>
@@ -118,9 +118,9 @@ function Layout4({ paragraph }: { paragraph: any }) {
     return (
         <div className="m-20">
             <div className="mt-20 flex">
-                <div className="float-right mr-12 ml-4 max-w-[50%]">
-                    <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.title }} />
-                    <div className="break-all" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
+                <div className="float-right items-center mr-12 ml-4 max-w-[50%]">
+                    <div className="break-word" dangerouslySetInnerHTML={{ __html: paragraph.title }} />
+                    <div className="break-word" dangerouslySetInnerHTML={{ __html: paragraph.content }} />
                 </div>
                 <div className="items-center flex float-left min-w-[50%] image-container" dangerouslySetInnerHTML={{ __html: paragraph.image_source }} />
             </div>
